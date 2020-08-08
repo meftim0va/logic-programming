@@ -1,0 +1,2842 @@
+\documentclass{article}
+
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[bulgarian]{babel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{breakurl}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{bm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{xfrac}
+\usepackage{cancel}
+\usepackage{picture}
+\usepackage{enumitem}
+
+\usepackage{geometry}
+\geometry{
+ a4paper,
+ total={150mm,217mm},
+ left=30mm,
+ top=40mm,
+ }
+
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+\newcommand{\mymod}{\models\!\mid}
+\newcommand{\nmodels}{\kern+0.25em|\kern-0.45em\neq}
+\newcommand{\modeq}{\kern-0.15em\models\kern-0.45em|\kern+0.1em}
+
+\newcommand{\Tau}{\mathrm{T}}
+
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
+  
+  
+\def\Proofs{1}
+\def\Definitions{1}
+\def\Theorems{1}
+\def\Properties{1}
+\def\Claims{1}
+\def\Lemmas{1}
+
+\begin{document}
+
+\newtheorem{mydef}{Дефиниция}
+\newtheorem{prop}{Свойство}
+\newtheorem{conseq}{Следствие}
+\newtheorem{claim}{Твърдение}
+\newtheorem{thm}{Теорема}
+\newtheorem{lem}{Лема}
+\newtheorem*{remark}{Забележка}
+\newtheorem*{example}{Пример}
+
+
+\title{Логическо програмиране}
+
+\author{Изготвил: Моника Ефтимова} 
+\date{}
+
+%\maketitle
+
+\begin{titlepage}
+\begin{center}
+\Huge{\textbf{Логическо програмиране}}
+\vfill
+\Large {
+Лектор:\textit{ Тинко Тинчев }}
+\end{center}
+
+\end{titlepage}
+
+\ifcase\Definitions\or
+\section*{Дефиниции}
+\begin{mydef}[Съждение]
+Нещо, което може да отъждествим до \textbf{вярно} или \textbf{невярно}.
+
+Елементарните съждения имат предварително зададена стойност.
+
+\begin{mydef}[Отрицание]
+Отрицание на съждението $A$ променя неговата стойност на противоположната, т.е ``не $A$'' и пишем $\neg A$.
+
+\begin{itemize}
+\item $H_\neg(T) = F$
+\item $H_\neg(F) = T$
+\end{itemize}
+\end{mydef}
+
+\end{mydef}
+
+\begin{mydef}[Конюнкция]
+Конюнкция на съжденията $A$ и $B$ наричаме съждението  ``$A$ и $B$'' и пишем $(A \& B)$.
+
+\begin{itemize}
+\item $H_\&(T,T) = T$
+\item $H_\&(T,F) = H_\&(F, T) = H_\&(F,F) = F$
+\end{itemize}
+
+\end{mydef}
+
+\begin{mydef}[Дизюнкция]
+Дизюнкция на съжденията $A$ и $B$ наричаме съждението  ``$A$ или $B$'' и пишем $(A \lor B)$.
+
+\begin{itemize}
+\item $H_\lor(T,T) = H_\lor(T,F) = H_\lor(F, T) = T$
+\item $H_\lor(F,F) = F$
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}[Импликация]
+Импликация на съжденията $A$ и $B$ наричаме съждението  ``ако $A$, то $B$'' и пишем $(A \Rightarrow B)$.
+
+\begin{itemize}
+\item $H_\Rightarrow(T,T) = H_\Rightarrow(F,T) = H_\Rightarrow(F, F) = T$
+\item $H_\Rightarrow(T,F) = F$
+\end{itemize}
+
+\end{mydef}
+
+\begin{mydef}[Еквивалентност]
+Еквивалентност на съжденията $A$ и $B$ наричаме съждението  ``$A$ тогава и само тогава, когато $B$'' и пишем $(A \Leftrightarrow B)$.
+
+\begin{itemize}
+\item $H_\Leftrightarrow(T,T) = H_\Leftrightarrow(F,F) = T$
+\item $H_\Leftrightarrow(T,F) = H_\Leftrightarrow(F,T) = F$
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}[Квантор за всеобщност]
+Квантор за всеобщност в даден свят за $\varphi$ е съждението ``за всяко $x$ е в сила $\varphi$'' и записваме $(\forall x \varphi)$
+
+\begin{example}
+$a_1, a_2, a_3, a_4, a_5$ -- светът, в който работим.
+
+Тогава, $\forall a \varphi$ е еквивалентно на $\varphi(a_1) \& \varphi(a_2) \& \varphi(a_3) \& \varphi(a_4) \& \varphi(a_5)$, тъй като светът е краен.
+\end{example}
+\end{mydef}
+
+\begin{mydef}[Квантор за съществуване]
+Квантор за съществуване в даден свят за $\varphi$ е съждението ``съществува $x$, за което е в сила $\varphi$'' и записваме $(\exists x \varphi)$
+
+\begin{example}
+$a_1, a_2, a_3, a_4, a_5$ -- светът, в който работим.
+
+Тогава, $\exists a \varphi$ е еквивалентно на $\varphi(a_1) \lor \varphi(a_2) \lor \varphi(a_3) \lor \varphi(a_4) \lor \varphi(a_5)$, тъй като светът е краен.
+\end{example}
+\end{mydef}
+
+\begin{mydef}[Език на съждителното смятане]
+Езикът на съждителното смятане съдържа следните непразни множества от символи:
+\begin{itemize}
+\item Съждителни променливи (може и безкраен брой): съвкупност от букви и символи, които могат да бъдат оценени до верни/неверни в света, замисълът е те да означават елементарни съждения $(PVar)$;
+\item Логически връзки: $\neg, \&, \lor, \Rightarrow, \Leftrightarrow$ -- букви (символи) за съждителните връзки;
+\item Помощни символи: $(, )$.
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}[Съждителна формула]
+Съждителната формула има следната структура:
+\begin{itemize}
+\item Съждителните променливи са съждителни формули;
+\item Ако $\varphi$ е съждителна формула, то $\neg\varphi$ също е съждителна формула;
+\item Ако $\varphi$ и $\psi$ са съждителни формули, то $(\varphi \& \psi), (\varphi \lor \psi), (\varphi \Rightarrow \psi), (\varphi \Leftrightarrow \psi)$ са съждителни формули.
+\end{itemize}
+Формули са само нещата, които могат да се получат след краен брой прилагане на горните правила.
+\end{mydef}
+
+\begin{mydef}[Индуктивен принцип за доказване на свойства на съждителни формули]
+Нека $A$ е свойство и са в сила:
+\begin{itemize}
+\item всяка съждителна променлива има свойство $A$;
+\item ако $\varphi$ е съждителна формула, която има свойството $A$, то $\neg \varphi$ също има свойството $A$;
+\item ако $\varphi$ и $\psi$ са съждителни формули, които имат свойството $A$, то $(\varphi \sigma \psi)$, където $\sigma \in \{\lor, \&, \Rightarrow, \Leftrightarrow\}$, също има свойството $A$.
+\end{itemize}
+Тогава всяка съждителна формула има свойството $A$.
+\end{mydef}
+
+\begin{mydef}[Еднозначен синтактичен анализ за формули]
+За всяка съждителна формула $\varphi$ е в сила точно една от следните три възможности:
+\begin{itemize}
+\item $\varphi = P$, където $P$ е съждителна променлива
+\item $\varphi = \neg\varphi_1$, където $\varphi_1$ е еднозначно определена съждителна формула
+\item $\varphi = (\varphi_1 \sigma \varphi_2)$, където $\varphi_1, \varphi_2$ са еднозначно определени формули, а $\sigma$ е еднозначно определена двувалентна логическа връзка измежду $\{\lor, \&, \Rightarrow, \Leftrightarrow\}$
+\end{itemize}
+\end{mydef}
+
+\subsection*{Семантика на съждителните формули}
+
+\begin{mydef}[Съждителна (булева) интерпретация]
+Съждителна интерпретация (оценка на съждителните променливи) е изображение (функция) $I_0$ от съвкупността на съждителните променливи $PVar$ (propositional variables) в $\{ T, F \}$, т.е. $I_0: PVar \longrightarrow \{T, F\}$.
+\[
+I_0(P) \in \{ T, F \}, P \in PVar
+\]
+\end{mydef}
+
+\begin{mydef}[Вярност на формула. Булев модел за формула]
+Казваме, че \textbf{формулата $\varphi$ е вярна} при булевата интерпретация $I_0$, ако
+\[
+I(\varphi) = T,
+\]
+където $I$ е единственото разширение на $I_0$ (от твърдение \ref{tv-1}). 
+
+Пишем още, $I \models \varphi$ и казваме също така ``$I$ е модел на $\varphi$''.
+\[
+I_0 : PVar \rightarrow \{T, F\} \]
+\[
+I : For \rightarrow \{T, F\}
+\]
+
+Ако $I$ не е булев модел за $\varphi$, пишем $I \cancel{\models} \varphi$.
+\end{mydef}
+
+\begin{mydef}[Изпълнимост]
+Казваме, че формулата $\varphi$ е \textbf{изпълнима}, ако има булева интерпретация $I$, която е модел за $\varphi$, т.е. $I(\varphi) = T$.
+
+Има формули, които не са изпълними. Такива формули се наричат \textbf{неизпълними} формули. $\varphi$ е \textbf{неизпълнима}, т.е. няма булева интерпретация $I_0$, за която $I(\varphi) = T$, т.е. за всяка булева интерпретация $I_0, I(\varphi) = F$.
+\end{mydef}
+
+\begin{mydef}[Булев модел за множество от формули]
+Нека $\Gamma$ е множество от съждителни формули. Нека $I$ е съждителна (булева) интерпретация. 
+
+Казваме, че $\bm{I}$ \textbf{е модел на} $\bm{\Gamma}$, ако всеки път, когато $\varphi \in \Gamma$, то $I(\varphi) = T$.
+
+$\ $
+\par Бележим:
+\begin{itemize}
+\item $I \models \Gamma, I$ е модел за $\Gamma$
+\item $I \models \Gamma \longleftrightarrow I$ е модел за всяка формула от $\Gamma$
+\item $I \models \varphi \longleftrightarrow I \models \{\varphi\}$, т.е. $\varphi$ и $\{\varphi\}$ имат едни и същи модели
+\item $I \models \{\varphi_1, \varphi_2, \ldots, \varphi_n\} \leftrightarrow I(\varphi_1) = T, I(\varphi_2) = T, \ldots, I(\varphi_n) = T \leftrightarrow I((\varphi_1\&\varphi_2\&\ldots\&\varphi_n)) = T$
+\end{itemize}
+
+\begin{remark}
+Ако има формула $\varphi \in \Gamma$, такава че $I \cancel{\models} \varphi$, т.е. $I(\varphi) = F$, то $I$ не е модел за $\Gamma$, т.е. $I \cancel{\models} \Gamma$.
+\end{remark}
+
+\end{mydef}
+
+
+\begin{mydef}[Изпълнимост на множество от формули]
+Едно множество от формули $\Gamma$ се нарича \textbf{изпълнимо}, ако $\Gamma$ има модел. Ако кажем, че $\Gamma$ е изпълнимо, то всяка формула от него също е изпълнима. 
+
+$\Gamma$ е \textbf{неизпълнимо}, ако $\Gamma$ не е изпълнимо, т.е. $\Gamma$ няма модел.
+\end{mydef}
+
+\begin{mydef}[Съждителна тавтология]
+Една формула се нарича съждителна тавтология, ако е вярна при всяка булева интерпретация.
+\begin{itemize}
+\item $\varphi$ е съждителна тавтология ,точно тогава, когато $\neg\varphi$ е неизпълнима формула;
+\item $\varphi$ е неизпълнима точно тогава, когато $\neg\varphi$ е съждителна тавтология.
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}
+Нека $\varphi$ е съждителна формула. С $Var(\varphi)$ означаваме множеството на съждителните променливи, участващи във $\varphi$.
+\end{mydef}
+
+
+\subsection*{Булева еквивалентност на съждителни формули}
+
+\begin{mydef}[Логическо следване от формула]
+Нека $\varphi$ и $\psi$ са съждителни формули. Казваме, че $\psi$ логически следва от $\varphi$, ако всеки модел на $\varphi$ е модел на $\psi$, т.е. всеки път, когато $I_0$ е булева интерпретация, ако $I(\varphi) = T$, то $I(\psi) = T$. Пишем $\varphi \models \psi$.
+
+\begin{remark}
+С $\varphi \models \psi$ ще означаваме ``във всички светове, в които $\varphi$ е вярно, $\psi$ е вярно''.
+\end{remark}
+
+\end{mydef}
+
+\begin{mydef}[Логическa еквивалентност на формули]
+Нека $\varphi$ и $\psi$ са съждителни формули. $\varphi$ и $\psi$ са логически еквивалентни, ако:
+
+\[\varphi \models \psi\ \text{и}\ \psi \models \varphi \longleftrightarrow \text{за всяка булева интерпретация}\ I_0, I(\varphi) = I(\psi)\]
+
+Пишем $\varphi \mymod \psi$.
+
+\begin{remark}
+$\varphi$ и $\psi$ имат едни и същи булеви модели, ако са логически еквивалентни.
+\end{remark}
+\end{mydef}
+
+\subsection*{Заместване на съждителни променливи със съждителни формули}
+
+\begin{mydef}[Едновременна замяна]
+Нека $\varphi$ е съждителна формула и $Var(\varphi) \subseteq \{P_1, P_2,\\ \ldots, P_n\}$, където $P_1, P_2, \ldots, P_n$ са различни съждителни променливи. Нека $\varphi_1, \varphi_2, \ldots, \varphi_n$ са произволни съждителни формули.
+
+Тогава за $\varphi[P_1, P_2, \ldots, P_n]: Var(\varphi) \subseteq \{P_1, P_2, \ldots, P_n\}$, $\varphi[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}]$ е резултатът от едновременната замяна на всички срещания на буквите $P_1, P_2, \ldots, P_n$ във $\varphi$ със съответните $\varphi_1, \varphi_2, \ldots, \varphi_n$.
+\end{mydef}
+
+\begin{mydef}
+Ако имаме две булеви интерпретации $I_0, J_0$, такива че $I_0\restriction Var(\varphi) = J_0\restriction Var(\varphi)$, то $I(\varphi) = J(\varphi)$.
+\end{mydef}
+
+\begin{mydef}[Литерал]
+Съждителен литерал ще наричаме формула, която е или съждителна променлива, или отрицание на съждителна променлива.
+\end{mydef}
+
+\begin{mydef}[Елементарна конюнкция]
+Елементарна конюнкция наричаме формула от вида $\varepsilon_1P_1\ \&\ \varepsilon_2P_2\ \&\ \ldots\ \&\ \varepsilon_nP_n$, където $\varepsilon_i \in \{\varepsilon, \neg\}$, а $P_1, P_2, \ldots, P_n \in PVar$.
+\end{mydef}
+
+\begin{mydef}[Елементарна дизюнкция]
+Елементарна дизюнкция наричаме формула от вида $\varepsilon_1P_1 \lor \varepsilon_2P_2 \lor \ldots \lor \varepsilon_nP_n$, където $\varepsilon_i \in \{\varepsilon, \neg\}$, а $P_1, P_2, \ldots, P_n \in PVar$. Множество от вида $\{\varepsilon_1P_1, \varepsilon_2P_2, \ldots, \varepsilon_nP_n\}$ ще наричаме \textbf{дизюнкти}.
+
+$\\ $
+Индуктивна дефиниция:
+\begin{itemize}
+\item всеки литерал е елементарна дизюнкция;
+\item ако $\varphi$ е елементарна дизюнкция и $L$ е литерал, то формулата $(\varphi \lor L)$ е също елементарна дизюнкция.
+\end{itemize}
+Елементарните дизюнкции ще записваме без вътрешните скоби (заради асоциативността).
+\end{mydef}
+
+\begin{mydef}[Конюнкция на елементарни дизюнкции]
+Индуктивна дефиниция:
+\begin{itemize}
+\item всяка елементарна дизюнкция е конюнкция на елементарни дизюнкции;
+\item ако $K$ е конюнкция на елементарни дизюнкции, $E$ е елементарна дизюнкция, то $(K \& E)$ е конюнкция на елементарни дизюнкции.
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}
+Нека $\Gamma$ е множество от съждителни формули и $\psi$ е съждителна формула. Казваме, че  \textbf{от $\bm{\Gamma}$ логически следва $\bm{\psi}$}. $\Gamma \models \psi$, ако всеки модел на $\Gamma$ е модел за $\psi$.
+
+Ако има модел на $\Gamma$, който не е модел за $\psi$, то от $\Gamma$ не следва логически $\psi$: $\Gamma \nmodels \psi$. С други думи, има булева интерпретация $I_0$, такава че $\varphi \in \Gamma \longrightarrow I(\varphi) = T\ \&\ I(\psi) = F$.
+\end{mydef}
+
+\subsection*{Предикатно смятане от първи ред}
+
+\begin{mydef}[Език на предикатното смятане от първи ред]
+Език на предикатнот смятане е двойка от вида <логическа-част, нелогическа-част>. Логическата част ще е една и съща за всички езици на предикатното смятане от първи ред. Бележи се с $\mathcal{L}$ и съдържа:
+
+\begin{enumerate}
+\item Логическа част:
+\begin{itemize}
+\item \textbf{индивидни променливи} ($Var$): съвкупност от букви за означаване на обекти. 
+
+Индивидните променливи:
+\begin{itemize}
+\item са номерирани с $\mathbb{N}: x_0, x_1, \ldots$;
+\item не са съждителни връзки.
+\end{itemize} 
+
+\item съждителни \textbf{логически връзки} (булеви операции): азбуката $\neg, \&, \lor, \Rightarrow, \Leftrightarrow$
+\item \textbf{квантори}: буквите $\forall, \exists$
+\item \textbf{помощни символи}: $, ( )$
+\end{itemize}
+
+\begin{remark}
+Азбуките на индивидните променливи, съждителните логически връзки и кванторите са винаги непразни.
+\end{remark}
+
+\item Нелогическа част:
+\begin{itemize}
+\item $\bm{\mathbb{C}onst_\mathcal{L}}$: \textbf{индивидни константи за езика} $\mathcal{L}$, т.е. съвкупност от букви за имена на обектите (или означение за конкретен обект, като указател към обект);
+\item $\bm{\mathbb{F}unc_\mathcal{L}}$: \textbf{функционални символи за езика} $\mathcal{L}$, т.е. съвкупност от букви за означаване на функции: $f, g, h, \ldots$.
+
+За всеки функционален символ има определена арност $(\#): \#[f]$ е брой на аргументите на $f$ и представлява естествено число $> 0$.
+\item $\bm{\mathbb{P}red_\mathcal{L}}$: \textbf{предикатни символи за езика} $\mathcal{L}$, т.е. съвкупност от букви за означаване на първични свойства: $p, q, r, \ldots$.
+
+Всеки предикатен символ има арност.
+
+\begin{remark}
+$\#: \mathbb{F}unc_\mathcal{L} \cup \mathbb{P}red_\mathcal{L} \longrightarrow \mathbb{N} \setminus \{0\}$
+\end{remark}
+\item $\bm{\doteq}$ : \textbf{формално равенство}. Може и да го няма.
+\end{itemize}
+
+\begin{remark}
+$\mathbb{C}onst_\mathcal{L}, \mathbb{F}unc_\mathcal{L}$ и $\mathbb{P}red_\mathcal{L}$ може да бъдат и празни азбуки.
+\end{remark}
+\end{enumerate}
+
+\end{mydef}
+
+\begin{mydef}[Разширение]
+Нека $\mathcal{L}_1$ и $\mathcal{L}_2$ са езици на предикатното смятане от първи ред. Казваме, че $\mathcal{L}_2$ е разширение на $\mathcal{L}_1$, ако $\mathbb{C}onst_{\mathcal{L}_1} \subseteq \mathbb{C}onst_{\mathcal{L}_2}$, $\mathbb{F}unc_{\mathcal{L}_1} \subseteq \mathbb{F}unc_{\mathcal{L}_2}, \#_{\mathcal{L}_1}$ и $\#_{\mathcal{L}_2}$ са едни и същи за функционални символи от $\mathcal{L}_1$, ако $\mathcal{L}_1$ е с формално равенство, то и $\mathcal{L}_2$ е с формално равенство, $\mathbb{P}red_{\mathcal{L}_1} \subseteq \mathbb{P}red_{\mathcal{L}_2}, \#_{\mathcal{L}_1}$ и $\#_{\mathcal{L}_2}$ са едни и същи за предикатни символи от $\mathcal{L}_1$.
+\end{mydef}
+
+\begin{mydef}
+Нека $\mathcal{L}$ е предикатен език от първи ред. Ще дефинираме две множествва от формални думи в обединението на азбуките от $\mathcal{L}$.
+\begin{itemize}
+\item[Термове:] $\Tau_\mathcal{L}$ -- означават обекти;
+\item[Формули:] $\mathbb{F}or_\mathcal{L}$ -- означават свойства.
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}[Термове]
+Термовете от езика $\mathcal{L}$ са думи за означаване на обекти.
+
+Индуктивна дефиниция на $\Tau_\mathcal{L}$:
+\begin{itemize}
+\item индивидните константи са термове;
+\item индивидните променливи са термове;
+\item ако $\tau_1, \tau_2, \ldots, \tau_n$ са термове, $f \in \mathbb{F}unc_\mathcal{L}, \#[f] = n$, то думата $f(\tau_1, \tau_2, \ldots, \tau_n)$ също е терм.
+\end{itemize}
+
+\end{mydef}
+
+\begin{mydef}[Атомарни формули от езика $\mathcal{L}$]
+$\ $
+
+$\mathbb{A}t\mathbb{F}_\mathcal{L}$ са думите от вида $p(\tau_1, \tau_2, \ldots, \tau_n)$, където $p \in \mathbb{P}red_\mathcal{L}, \#[p] = n, \tau_1, \tau_2, \ldots, \tau_n$ -- произволни термове от езика $\mathcal{L}$.
+
+Ако $\mathcal{L}$ е език с $\doteq$, то има още един вид атомарни формули и това са думите от вида $(\tau_1 \doteq \tau_2)$.
+\end{mydef}
+
+\begin{mydef}[Формули]
+$\ $
+
+Индуктивна дефиниция на $\mathbb{F}or_\mathcal{L}$:
+\begin{itemize}
+\item атормарните формули от $\mathcal{L}$ са формули от $\mathcal{L}$;
+\item ако $\varphi$ е формула от $\mathcal{L}$, то $\neg\varphi$ е също формула от $\mathcal{L}$;
+\item ако $\varphi$ и $\psi$ са формули от $\mathcal{L}$, то $(\varphi\ \&\ \psi), (\varphi \lor \psi), (\varphi \Rightarrow \psi), (\varphi	\Leftrightarrow \psi)$ са също формули от $\mathcal{L}$;
+\item ако $\varphi$ е формула от $\mathcal{L}$, $x$ е индивидна променлива, то $\forall x \varphi$ и $\exists x \varphi$ са също формули от $\mathcal{L}$ (отличително свойство на език от 1-ви ред).
+\end{itemize}
+
+\end{mydef}
+
+\begin{mydef}[Индуктивен принцип за доказване на свойства на термове]
+$\ $
+
+Нека $P$ е свойство.
+Нека са в сила следните условия:
+\begin{itemize}
+\item всяка индивидна константа има свойството $P$;
+\item всяка индивидна променлива има свойството $P$;
+\item всеки път, когато $\tau_1, \tau_2, \ldots, \tau_n$ са термове, които имат свойството $P$ и $f \in \mathbb{F}unc_\mathcal{L}, \#[f] = n$, може да се твърди, че думата $f(\tau_1, \tau_2, \ldots, \tau_n)$ също има свойството $P$.
+\end{itemize}
+
+Тогава всеки терм $\tau$ от езика $\mathcal{L}$ има свойството $P$. 
+
+Означаваме: $\Tau_\mathcal{L}$ -- множеството на термовете в езика $\mathcal{L}$.
+\end{mydef}
+
+\begin{mydef}[Еднозначен синтактичен анализ за термове]
+Нека $\mathcal{L}$ е език на FOL(first-order logic). За всеки терм $\tau$ от $\mathcal{L}$ е в сила точно една от следните възможности:
+\begin{itemize}
+\item $\tau$ е индивидна константа;
+\item $\tau$ е индивидна променлива;
+\item $\tau$ е от вида $f(\tau_1, \tau_2, \ldots, \tau_n)$, където $f \in \mathbb{F}unc_\mathcal{L}, \#[f] = n, \tau_1, \tau_2, \ldots, \tau_n$ са еднозначно определени термове и $f$ е еднозначно определен функционален символ.
+\end{itemize}
+
+Ако $\tau = f(\tau_1, \tau_2, \ldots, \tau_n)$ и $\tau = g(\varkappa_1, \varkappa_2, \ldots, \varkappa_k)$, тогава $f = g, n = k, \tau_1 = \varkappa_1, \tau_2 = \varkappa_2, \ldots, \tau_n = \varkappa_k$.
+
+Никое собствено начало на терм не е собствен край на терм.
+
+$\\ $
+Алтернативна дефиниция: Нека $\tau$ е терм, $a$ е буква и $\tau = \alpha a \beta$. Ако $a$ е функционален символ с арност $n$, то има еднозначно определени термове $\tau_1, \tau_2, \ldots, \tau_n$, такива че $\beta = (\tau_1, \ldots, \tau_n)\beta_1$. С всеки терм можем да свържем едно синтактично наредено дърво.
+
+\end{mydef}
+
+\begin{mydef}
+Ако $\tau$ е терм, то $Var(\tau) = \{x, y, z, \ldots\}$ означаваме множеството на индивидните променливи, които участват в $\tau$.
+
+Индуктивно можем да дефинираме променливите на терм, $\tau (Var(\tau))$:
+\begin{itemize}
+\item $\tau = c \longrightarrow Var(\tau) = \varnothing$;
+\item $\tau = x \longrightarrow Var(\tau) = \{x\}$;
+\item $\tau = f(\tau_1, \tau_2, \ldots, \tau_n) \longrightarrow Var(\tau) = Var(\tau_1) \cup Var(\tau_2) \cup \ldots \cup Var(\tau_n)$.
+\end{itemize}
+
+\begin{remark}
+Удобно е да използваме следния запис: $\tau[x_1, x_2, \ldots, x_n]: \tau$ -- терм, $x_1, x_2, \ldots, x_n$ -- различни индивидни променливи участващи в $\tau$ и $Var(\tau) = \{x_1, x_2, \ldots, x_n\}$.
+\end{remark}
+\end{mydef}
+
+\begin{mydef}[Затворен терм]
+Много важна роля ще играят термовете, в които няма индивидни променливи, т.е. термовете $\tau$, такива че $Var(\tau) = \varnothing$. Наричаме такива термове затворени (основни, базисни, \textbf{ground term}). При дървовидно построение има само индивидни константи по листата. Означваме: $\bm{\Tau^{cl}_\mathcal{L}}$ -- множеството на затворените термове в езика $\mathcal{L}$ и $\Tau^{cl}_\mathcal{L} = \varnothing \longleftrightarrow \mathbb{C}onst_\mathcal{L} = \varnothing$.
+\end{mydef}
+
+\begin{mydef}[Индуктивна дефиниция на $\Tau^{cl}_\mathcal{L}$]
+$\ $
+
+\begin{itemize}
+\item индивидните константи са затворени термове;
+\item ако $\tau_1, \tau_2, \ldots, \tau_n$ са затворени термове, $f \in \mathbb{F}unc_\mathcal{L}, \#[f] = n$, то $f(\tau_1, \tau_2, \ldots, \tau_n)$ е затворен терм от езика $\mathcal{L}$.
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}[Подтерм]
+Казваме, че термът $\tau$ е подтерм на терма $\varkappa$, ако $\varkappa = \alpha\tau\beta$, където $\alpha$ и $\beta$ са думи.
+
+Ако $\varkappa = f(\varkappa_1, \varkappa_2, \ldots, \varkappa_k)$, то $\tau$ е подтерм на някой от термовете $\varkappa_1, \varkappa_2, \ldots, \varkappa_k$.
+
+Ако $\varkappa = f(\varkappa_1, \varkappa_2, \ldots, \varkappa_k)$ и $\tau$ е подтерм на $\varkappa, \varkappa = \alpha\tau\beta$, то за някое $i, 1 \leq i \leq k, \varkappa = f(\varkappa_1, \varkappa_2, \ldots, \varkappa_{i-1}, \alpha'\tau\beta', \varkappa_{i+1}, \ldots, \varkappa_k), \alpha = f(\varkappa_1, \varkappa_2, \ldots, \varkappa_{i-1}, \alpha', \beta = \beta', \varkappa_{i+1}, \ldots, \varkappa_k)$.
+
+Пишем $Subt(\tau)$.
+\end{mydef}
+
+\begin{mydef}[Индуктивна дефиниция на $Subt(\tau)$]
+С индукция относно построението на $\tau$ дефинираме $Subt(\tau)$ по следния начин:
+\begin{itemize}
+\item $\tau = c \longrightarrow Subt(\tau) = \{c\}$;
+\item $\tau = x \longrightarrow Subt(\tau) = \{x\}$;
+\item $\tau = f(\tau_1, \tau_2, \ldots, \tau_n) \longrightarrow Subt(\tau) = \{\tau\} \cup Subt(\tau_1) \cup Subt(\tau_2) \cup \ldots \cup Subt(\tau_n)$.
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}[Заместване на индивидни променливи с термове в термове]
+Нека $x_1, x_2, \ldots, x_n$ са различни индивидни променливи, а $\tau_1, \tau_2, \ldots, \tau_n$ са произволни термове от езика 
+$\mathcal{L}$. 
+
+С $\tau[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}]$ ще означаваме думата, която се 
+получава от $\tau$ при едновременната замяна на $x_1, x_2, \ldots, x_n$ съответно с $\tau_1, \tau_2, \ldots, \tau_n$.
+\end{mydef}
+
+\begin{mydef}[Индуктивна дефиниция на заместването]
+Нека $x_1, x_2, \ldots, x_n$ са различни индивидни променливи и $\tau_1, \tau_2, \ldots, \tau_n$ -- произволни термове.
+
+\begin{itemize}
+\item $c[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}] = c$;
+\item $x$:
+\begin{itemize}
+\item $x = x_i, 1 \leq i \leq n \longrightarrow x[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}] = \tau_i$;
+\item $x \not\in \{x_1, x_2, \ldots, x_n\} \longrightarrow x[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}] = x$.
+\makebox(0,0){\put(0,3\normalbaselineskip){%
+               $\left.\rule{0pt}{1.5\normalbaselineskip}\right\}$ (ih)}}
+\end{itemize}
+\item $f(\varkappa_1, \varkappa_2, \ldots, \varkappa_n)[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}] = f(\varkappa_1[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}], \varkappa_2[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}], \ldots, \\ \varkappa_n[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}])$ и използваме (ih) за $\varkappa_1, \varkappa_2, \ldots, \varkappa_n$.
+\end{itemize}
+
+Така $\tau[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}]$ е терм от езика $\mathcal{L}$.
+\end{mydef}
+
+
+\subsection*{Семантика на език от първи ред}
+
+\begin{mydef}[Структура за език от първи ред]
+Нека $\mathcal{L}$ е език от първи ред. Структура за $\mathcal{L}$ ще наричаме наредена двойка от вида $<A, \mathbb{I}>$, където:
+\begin{itemize}
+\item $A \neq \varnothing, A$ -- универсиум на структурата;
+\item $\mathbb{I}$ е интерпретация на $\mathcal{L}$ в $A$;
+\item $\mathbb{I}(c) \in A$ за всяка индивидна константа $c \in \mathbb{C}onst_\mathcal{L}$, може $c_1 \neq c_2$, но $c_1^\mathcal{A} = c_2^\mathcal{A}$;
+\item $\mathbb{I}(f) : A^{\#[f]} \longrightarrow A$ за всеки функционален символ $f \in \mathbb{F}unc_\mathcal{L}$, $Dom(f) = A^{\#[f]}$ -- тотална;
+\item $\mathbb{I}(p) \subseteq A^{\#[p]}$ -- множество от $n$-торки, където $n = \#[p], p \in \mathbb{P}red_\mathcal{L}$, може $p^\mathcal{A} = \varnothing$ или $p^\mathcal{A} = A^{\#[p]}$.
+\end{itemize}
+
+Означение: $\mathcal{A} = <A, I>, |\mathcal{A}| = A$
+
+\begin{remark}
+Вместо $\mathbb{I}(c)$ ще пишем $c^\mathcal{A}$, вместо $\mathbb{I}(f)$ -- $f^\mathcal{A}$ и вместо $\mathbb{I}(p)$ -- $p^\mathcal{A}$: интерпретации в структурата $\mathcal{A}$.
+\end{remark}
+
+\begin{remark}
+За да може да кажем какво означава един терм, трябва да кажем какво означават променливите в него.
+\end{remark}
+
+\end{mydef}
+
+\begin{mydef}[Оценка]
+Нека $\mathcal{A}$ е структура за езика $\mathcal{L}$. Нека универсумът на $\mathcal{A}$ е $A$. Оценката на индивидните променливи наричаме изображение $\nu: Var \longrightarrow A$.
+\end{mydef}
+
+\begin{mydef}[Модифицирана оценка]
+Нека $x \in Var, a \in A$. Тогава модифицирана оценка в точка $x$ с $a$ ще наричаме $v_a^x(y) = \begin{cases}
+a, \ \ \ \ y = x\\
+\nu(y), y \neq x
+\end{cases} $.
+\end{mydef}
+
+\begin{mydef}[Оценка в структура $\mathcal{A}$ (Тарски)]
+$\ $
+
+Нека $\mathcal{A} = <A, \mathbb{I}>$ е структура за FOL $\mathcal{L}$. Нека $\nu$ е оценка на индивидните променливи в $\mathcal{A}$. Индуктивно дефинираме за всеки терм $\tau \in \Tau_\mathcal{L}$ стойност на $\tau$ в $\mathcal{A}$ при оценка $\nu\ (\tau^\mathcal{A}[\nu])$.
+
+\begin{itemize}
+\item $\tau = c, c \in \mathbb{C}onst_\mathcal{L} \longrightarrow c^\mathcal{A}[\nu] \leftrightharpoons c^\mathcal{A}$;
+\item $\tau = x, x \in Var \longrightarrow x^\mathcal{A}[\nu] \leftrightharpoons \nu(x)$;
+\item $\tau = f(\tau_1, \tau_2, \ldots, \tau_n), \#[f] = n, f \in \mathbb{F}unc_\mathcal{L} \longrightarrow \tau^\mathcal{A}[\nu] \leftrightharpoons f^\mathcal{A}(\tau^\mathcal{A}_1[\nu], \tau^\mathcal{A}_2[\nu], \ldots, \tau^\mathcal{A}_n[\nu])$.
+\end{itemize}
+
+\begin{remark}
+Означаваме: $\tau^\mathcal{A}[\nu]$ или $\|\tau\|^\mathcal{A}[\nu]$.
+\end{remark}
+
+\begin{remark}
+Тази дефиниция е коректна заради еднозначния синтактичен анализ на термове.
+\end{remark}
+
+\end{mydef}
+
+
+\begin{mydef}[Стойност на предикатна формула в структура при дадена оценка]
+Нека $\varphi$ е формула, $\mathcal{A}$ е структура, $\nu$ е оценка в структурата $\mathcal{A}$. С индукция по построение на формулите дефинираме $\|\varphi\|^\mathcal{A}[\nu] \in \{T, F\}$. (Трябва ни и еднозначен синтактичен анализ):
+
+\begin{itemize}
+\item $\varphi$ е атомарна:
+\begin{itemize}
+\item $\varphi = p(\tau_1, \tau_2, \ldots, \tau_n)$: 
+
+$\|\varphi\|^\mathcal{A}[\nu] = \|p(\tau_1, \tau_2, \ldots, \tau_n)\|^\mathcal{A}[\nu] = T \leftrightharpoons <\tau_1^\mathcal{A}[\nu], \tau_2^\mathcal{A}[\nu], \ldots, \tau_n^\mathcal{A}[\nu]> \in p^\mathcal{A}$. 
+
+Елементите на универсума означени с $\tau_1, \tau_2, \ldots, \tau_n$ имат свойството означено с $p$.
+
+\item $\varphi = (\tau_1 \doteq \tau_2)$:
+
+$\|\varphi\|^\mathcal{A}[\nu] = \|(\tau_1 \doteq \tau_2)\|^\mathcal{A}[\nu] = T \leftrightharpoons \tau_1^\mathcal{A}[\nu] = \tau_2^\mathcal{A}[\nu]$
+\end{itemize}
+\item $\varphi = \neg\varphi_1: \|\varphi\|^\mathcal{A}[\nu] = H_\neg(\|\varphi_1\|^\mathcal{A}[\nu])$
+\item $\varphi = (\varphi_1 \sigma \varphi_2), \sigma \in \{\&,\lor, \Rightarrow, \Leftrightarrow \}: \|\varphi\|^\mathcal{A}[\nu] = H_\sigma(\|\varphi_1\|^\mathcal{A}[\nu], \|\varphi_2\|^\mathcal{A}[\nu])$
+\item $\varphi = \forall x\psi: \|\varphi\|^\mathcal{A}[\nu] = \|\forall x\psi\|^\mathcal{A}[\nu] = T \leftrightharpoons \forall a \in A, \|\psi\|^\mathcal{A}[\nu_a^x] = T, \\ $ където $v_a^x[y] = \begin{cases}
+a, \ \ \ \ y = x\\
+\nu(y), y \neq x
+\end{cases} $
+\item $\varphi = \exists x \psi: \|\varphi\|^\mathcal{A}[\nu] = \|\exists x\psi\|^\mathcal{A}[\nu] = T \leftrightharpoons \exists a \in A, \|\psi\|^\mathcal{A}[\nu_a^x] = T, \\ $ където $v_a^x[y] = \begin{cases}
+a, \ \ \ \ y = x\\
+\nu(y), y \neq x
+\end{cases} $
+\end{itemize}
+
+\begin{remark}
+Ако $\|\varphi\|^\mathcal{A}[\nu] = T$, то пишем $\mathcal{A} \models_\nu \varphi$ и четем ``в $\mathcal{A}$, при оценката $\nu$, е вярна формулата $\varphi$'' и за $\|\varphi\|^\mathcal{A}[\nu] = F$ ще пишем $\mathcal{A} \cancel{\models}_\nu \varphi$ и казваме ``в $\mathcal{A}$, при оценката $\nu$, е невярна формулата $\varphi$''.
+\end{remark}
+
+\end{mydef}
+
+\begin{mydef}
+Нека $\varphi$ -- формула и $Var^{free}(\varphi) \subseteq \{x_1, x_2, \ldots x_n\}$. 
+
+Тогава ще пишем $\varphi[x_1, x_2, \ldots, x_n]$, където наредбата $x_1, x_2, \ldots, x_n$ е фиксирана. Вместо да пишем $\|\varphi\|^\mathcal{A}[\nu]$, където $\nu(x_1) = a_1, \nu(x_2) = a_2, \ldots \nu(x_n) = a_n$, ще пишем $\varphi[\![a_1, a_2, \ldots a_n]\!]$, където $a_1, a_2, \ldots a_n$ е фиксирана наредба от $n$ от света.
+
+Вместо $\|\varphi\|^\mathcal{A}[\nu] = T$ имаме $\mathcal{A} \models_\nu \varphi$, т.е. $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots a_n]\!]$.
+
+Така всяка формула $\varphi[x_1, x_2, \ldots x_n]$ определя множеството от тези $n$-торки $\{<a_1, a_2, \ldots a_n> | a_1, a_2,\ldots, a_n \in A, \mathcal{A} \models \varphi[\![a_1, a_2, \ldots a_n]\!]\} \leftrightharpoons \mathcal{D}^\mathcal{A}_{\varphi[x_1, x_2, \ldots, x_n]}$. Всички множества в една структура, които са от този вид, са определими.
+
+За множеството $\mathcal{D}_\varphi$ ще казваме, че е определимо с $\varphi$ в $\mathcal{A}$.
+
+$C \subseteq A^n$ е определимо в $\mathcal{A}$, ako $C = \mathcal{D}_\varphi$ за някои $\varphi$.
+\end{mydef}
+
+
+\begin{mydef}[Вярна формула]
+Нека $\mathcal{A}$ е структура, $\varphi$ е формула. Казваме, че $\mathcal{A} \models \varphi$ (``в $\mathcal{A}$ е вярна $\varphi$''), ако за всяка оценка $\nu$ в $\mathcal{A}, \varphi$ е вярна: $\|\varphi\|^\mathcal{A}[\nu] = T$, и записваме $\mathcal{A} \models_\nu \varphi$.
+
+\begin{remark}
+Има структури, формули и оценки $\nu_1, \nu_2$, такива че: $\\ \mathcal{A} \models_{\nu_1} \varphi$, $\mathcal{A} \cancel{\models}_{\nu_2} \varphi \Rightarrow \mathcal{A} \models_{\nu_2} \!\!\neg\varphi$
+\end{remark}
+
+\begin{remark}
+Ако $\mathcal{A} \cancel{\models} \varphi$ има оценка $\nu_1$ в $\mathcal{A}$, за която $\mathcal{A} \cancel{\models}_{\nu_1} \varphi \Rightarrow \mathcal{A} \models_{\nu_1} \!\!\neg\varphi$.
+\end{remark}
+
+\begin{remark}
+$\mathcal{A} \models \varphi$ или $\mathcal{A} \models \neg\varphi$, ако $\varphi$ е затворена, но за произволна формула $\varphi$ от $\mathcal{A} \models \varphi$ или $\mathcal{A} \cancel{\models} \varphi$ не следва $\mathcal{A} \models \neg\varphi$, защото може и за $\neg\varphi$ да съществува оценка $\nu_1$, за която $\mathcal{A} \cancel{\models}_{\nu_1} \!\!\neg\varphi$.
+\end{remark}
+
+\end{mydef}
+
+\begin{mydef}[Валидна формула]
+Казваме, че $\varphi$ е валидна (общовалидна) формула в структурата $\mathcal{A}$, ако $\mathcal{A} \models \varphi$.
+\end{mydef}
+
+\begin{mydef}[Затворена формула]
+Една формула $\varphi$ се нарича затворена, ако няма свободни променливи, т.е. $Var^{free}(\varphi) = \varnothing$ (говори за света).
+
+\begin{remark}
+Ако $\varphi$ е затворена, то е вярно $\mathcal{A} \models \varphi$ или $\mathcal{A} \models \neg\varphi$.
+\end{remark}
+
+\end{mydef}
+
+\begin{mydef}[Изпълнима формула]
+Формулата $\varphi$ е изпълнима, ако съществува структура $\mathcal{A}$ и оценка $\nu$, такива че $\|\varphi\|^\mathcal{A}[\nu] = T$, тогава $\mathcal{A} \models_\nu \varphi$.
+
+\begin{remark}
+Няма задължение различните индивидни константи да бъдат интерпретирани в структурата като различни обекти, могат да съвпадат, $c^\mathcal{A} \in A$.
+\end{remark}
+\end{mydef}
+
+\begin{mydef}[Изпълнимо множество от формули]
+Едно множество от предикатни формули $\Gamma$ е изпълнимо, ако съществува структура $\mathcal{A}$ и оценка $\nu$, такива че за всяка формула $\varphi \in \Gamma, \mathcal{A} \models_\nu \varphi$.
+
+Казваме, че $\Gamma$ е неизпълнимо, ако $\Gamma$ не е изпълнимо.
+
+\begin{remark}
+$\varnothing$ е изпълнимо за всяка структура и всяка оценка.
+\end{remark}
+
+\begin{remark}
+Множеството от всички формули не е изпълнимо, тъй като в такова множество за някоя формула $\varphi$, $\neg\varphi$ също е от множеството.
+\end{remark}
+
+\end{mydef}
+
+\begin{mydef}[Предикатна тавтология]
+Казваме, че $\varphi$ е предикатна тавтология (общовалидна), ако за всяка структура $\mathcal{A}, \mathcal{A} \models \varphi$. Означаваме със $\models \varphi$.
+\end{mydef}
+
+\begin{mydef}[Подформула]
+Казваме, че $\varphi$ е подформула на $\psi$, ако има думи $\alpha$ и $\beta$, такива че $\psi = \alpha\varphi\beta$. Всяка такава двойка $\alpha, \beta$ определя едно конкретно участие на $\varphi$ в $\psi$.
+\end{mydef}
+
+\begin{mydef}[Индуктивна дефиниция на подформула]
+Нека $\varphi$ е формула. Със $SubFor(\varphi)$ ще означаваме множеството от всички подформули на $\varphi$.
+\begin{itemize}
+\item ако $\varphi$ е атомарна, то $SubFor(\varphi) = \{\varphi\}$;
+\item $SubFor(\neg\varphi) = \{\neg\varphi\} \cup SubFor(\varphi)$;
+\item $SubFor((\varphi \sigma \psi)) = \{(\varphi \sigma \psi)\} \cup SubFor(\varphi) \cup SubFor(\psi), \sigma \in \{\lor, \&, \Rightarrow, \Leftrightarrow\}$;
+\item $SubFor(Qx\varphi) = \{Qx\varphi\} \cup SubFor(\varphi), Q \in \{\forall, \exists\}$.
+\end{itemize}
+\end{mydef}
+
+
+\begin{mydef}
+Нека $\varphi$ е предикатна формула, $a$ е съждителна връзка или квантор, $\\ \varphi = \alpha a \beta$.
+
+\begin{itemize}
+\item ако $a = \neg \longrightarrow$ има единствена формула $\varphi_1$, такава че $\beta = \varphi_1 \beta_1$;
+\item ако $a \in \{\&, \lor, \Rightarrow, \Leftrightarrow\} \longrightarrow$ има единствени формули $\varphi_1, \varphi_2$, такива че $\alpha = \alpha_1(\varphi_1, \\ \beta = \varphi_2)\beta_1$;
+\item ако $a \in \{\forall, \exists\} \longrightarrow$ има единствена индивидна променлива $x$ и единствена формула $\varphi_1$, такива че $\beta = x\varphi_1\beta_1$.
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}[Област на действие на квантор]
+Нека $\varphi$ е предикатна формула, $Q$ е квантор, т.е. $Q \in \{\forall, \exists\}$, и $\varphi = \alpha Q \beta$ е конкретно участие на $Q$ във $\varphi$.
+
+Тогава първата буква на $\beta$ е индивидна променлива и казваме, че това участие на $Q$ във $\varphi$ е \textbf{квантор по тази променлива}. Тогава има единствена индивидна променлива $x$ и предикатна формула $\psi$, такива че $\beta = x\psi\beta'$, т.е. $\varphi = \alpha Q x\psi\beta'$.
+
+Участието на $x\psi$ във $\varphi$ се нарича \textbf{област на действие} на участието на $Q$ във $\varphi$.
+\end{mydef}
+
+\begin{mydef}[Свободно и свързано участие на индивидна променлива в предикатна формула]
+$\ $
+
+Едно участие на променлива в предикатна формула се нарича свободно участие в тази формула, ако то не е в област на действие на квантор по тази променлива.
+
+Едно участие на променлива в предикатна формула се нарича свързано участие в тази формула, ако то е в област на действи на квантор по тази променлива.
+
+\begin{remark}
+Свързаните участия на индивидните променливи са в някакъв смисъл ``анонимни'' участия., т.е. името на променливата има значение само от синтактична гледна точка.
+\end{remark}
+\end{mydef}
+
+\begin{mydef}[Свободни и свързани индивидни променливи в предникатна формула]
+$\ $
+
+Една индивидна променлива се нарича свързана променлива на формула $\varphi$, ако тя има поне едно участие във $\varphi$, което е свързано: $Var^{bd}(\varphi)$.
+
+Една индивидна променлива се нарича свободна променлива за формула $\varphi$, ако тя има поне едно участие във $\varphi$, което е свободно: $V^{free}(\varphi)$.
+
+\begin{remark}
+Една променлива може да бъде, както свободна, така и свързана за $\varphi$.
+\end{remark}
+
+\begin{remark}
+Свободните променливи са важни, с $\varphi$ определяме свойство на свободните променливи, дали дадена $n$-торка има свойството $\varphi$.
+\end{remark}
+\end{mydef}
+
+\begin{mydef}
+Индуктивна дефиниция на $Var^{bd}(\varphi)$ и $Var^{free}(\varphi)$:
+
+\begin{itemize}
+\item $Var^{bd}(p(\tau_1, \tau_2, \ldots, \tau_n)) = \varnothing; Var^{free}(p(\tau_1, \tau_2, \ldots, \tau_n)) = Var(\tau_1) \cup Var(\tau_2) \cup \ldots Var(\tau_n) \\ Var^{bd}((\tau_1 \doteq \tau_2)) = \varnothing; Var^{free}((\tau_1 \doteq \tau_2)) = Var(\tau_1) \cup Var(\tau_2)$
+\item $Var^{bd}(\neg\varphi) = Var^{bd}(\varphi); Var^{free}(\neg\varphi) = Var^{free}(\varphi) \\ Var^{bd}((\varphi \sigma \psi)) = Var^{bd}(\varphi) \cup Var^{bd}(\psi); Var^{free}((\varphi \sigma \psi)) = Var^{free}(\varphi) \cup Var^{free}(\psi), \\ \sigma \in \{\&, \lor, \Rightarrow, \Leftrightarrow\}$
+\item $Var^{bd}(Qx\varphi) = Var^{bd}(\varphi) \cup \{x\}; Var^{free}(Qx\varphi) = Var^{free}(\varphi) \setminus \{x\}, Q \in \{\forall, \exists\}$
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}[Безкванторна формула]
+Една формула $\varphi$ се нарича безкванторна, ако в нея няма срещане на $\forall, \exists$.
+
+Безкванторните формули може да ги дефинираме индуктивно така:
+\begin{itemize}
+\item атомарните формули са безкванторни
+\item ако $\varphi$ е безкванторна, то $\neg\varphi$ също е безкванторна
+\item ако $\varphi$ и $\psi$ са безкванторни, то $(\varphi \sigma \psi), \sigma \in \{\lor, \&, \Rightarrow, \Leftrightarrow\}$
+\end{itemize}
+\end{mydef}
+
+\begin{mydef}
+Нека $x_1, x_2, \ldots, x_n$ са различни индивидни променливи, $Var^{free}(\varphi) \subseteq \{x_1, x_2, \ldots, x_n\}$. Тогава ще пишем $\varphi[x_1, x_2, \ldots, x_n]$.
+
+Нека $a_1, a_2, \ldots, a_n \in A$. Ако $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$, и $\nu_j(x_i) = a_i, i = 1, \ldots, n, j = 1, 2$, и $\|\varphi\|^\mathcal{A}[\nu_1] = \|\varphi\|^\mathcal{A}[\nu_2], \mathcal{A} \models_{\nu_1} \varphi \longleftrightarrow \mathcal{A} \models_{\nu_2} \varphi$. Тогава вместо $\mathcal{A} \models_\nu \varphi$ и $\nu(x_i) = a_i, i= 1, \ldots, n$ ще пишем $\mathcal{A} \models \varphi [\![a_1, a_2, \ldots	, a_n ]\!]$.
+
+\end{mydef}
+
+\begin{mydef}
+$Def^\mathcal{A}(\varphi) \leftrightharpoons \{<a_1, a_2, \ldots, a_n> | \mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]\}$ е определимо множество в $\mathcal{A}$ с $\varphi$.
+\end{mydef}
+
+\begin{mydef}[Определимо множество с формула]
+Нека $\mathcal{L}$ е предикатен език и $\mathcal{A}$ е структура на $\mathcal{L}$. Нека $B \subseteq A^n$ за някое $n$. Казваме, че $B$ е определимо в $\mathcal{A}$ с формула от $\mathcal{L}$, ако $\exists\varphi$ от $\mathcal{L}, \varphi[x_1, x_2, \ldots, x_n]$, такава че $\mathcal{A} \models \varphi [\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow <a_1, a_2, \ldots, a_n> \in B$, за произволни $a_1, a_2, \ldots, a_n \in A$.
+\end{mydef}
+
+
+\subsection*{Хомоморфизми и изоморфизми.}
+
+\begin{mydef}[Хомоморфизъм]
+Нека $\mathcal{A}$ и $\mathcal{B}$ са структури за езика $\mathcal{L}$. Нека $h: A \longrightarrow B$.
+
+Казваме, че $h$ е хомоморфизъм от $\mathcal{A}$ към $\mathcal{B}$, ако са в сила:
+
+\begin{itemize}
+\item $h(c^\mathcal{A}) = c^\mathcal{B}$ за всяка индивидна константа $c$;
+\item $h(f^\mathcal{A}(a_1, a_2, \ldots, a_n)) = f^\mathcal{B}(h(a_1), h(a_2), \ldots, h(a_n)), \#(f) = n, f \in \mathbb{F}unc_\mathcal{L}, \\ a_1, a_2, \ldots, a_n \in A$;
+\item $<a_1, a_2, \ldots, a_n> \in p^\mathcal{A} \longleftrightarrow <h(a_1), h(a_2), \ldots, h(a_n)> \in p^\mathcal{B}, \#(p) = n, p \in \mathbb{P}red_\mathcal{L}, \\ a_1, a_2, \ldots, a_n \in A$.
+\end{itemize}
+
+Казваме, че $\mathcal{B}$ е \textbf{хомоморфен образ} на $\mathcal{A}$ при $h$, ако $h[A] = B$.
+\end{mydef}
+
+\begin{mydef}[Изоморфно влагане]
+Нека $\mathcal{L}$ е език на предикатното смятане. $\mathcal{A}$ и $\mathcal{B}$ са структури за $\mathcal{L}$ и $h: A \longrightarrow B$. 
+Казваме, че \textbf{$h$ е изоморфно влагане на $\mathcal{A}$ в $\mathcal{B}$}, ако $h$ е хомоморфизъм на $\mathcal{A}$ в $\mathcal{B}$ и $h$ е инективна функция, т.е. имаме на лице следните условия:
+\begin{enumerate}
+\item $h$ е инекция $(a \neq b \longrightarrow h(a) \neq h(b))$
+\item $h(c^\mathcal{A}) = c^\mathcal{B}, \forall c \in \mathbb{C}onst_\mathcal{L}$
+\item $h(f^\mathcal{A}(a_1, a_2, \ldots, a_n)) = f^\mathcal{B}(h(a_1), h(a_2), \ldots, h(a_n))$, където $f \in \mathbb{F}unc_\mathcal{L}, \#[f] = n$,  произволни $a_1, a_2, \ldots, a_n \in A$
+\item $<a_1, a_2, \ldots, a_n> \in p^\mathcal{A} \longleftrightarrow <h(a_1), h(a_2), \ldots, h(a_n)> \in p^\mathcal{B}$, където $p \in \mathbb{P}red_\mathcal{L}, \#[p] = n$, произволни $a_1, a_2, \ldots, a_n \in A$
+\end{enumerate}
+
+
+\end{mydef}
+
+
+\begin{mydef}[Изоморфизъм]
+\textbf{Изоморфизъм на $\mathcal{A}$ върху $\mathcal{B}$} ще наричаме изоморфно влагане $h$ на $\mathcal{A}$ в $\mathcal{B}$, такова че $\mathcal{B}$ е хомоморфен образ на $\mathcal{A}$ $(h[A] = B)$, т.е. $h$ е хомоморфизъм на $A$ върху $B$ и е  биекция. Ако има изоморфизъм на $\mathcal{A}$ върху $\mathcal{B}$, ще казваме, че \textbf{$\mathcal{A}$ и $\mathcal{B}$ са изоморфни} и пишем $\mathcal{A} \cong \mathcal{B}$.
+
+\begin{remark}
+Дефиницията е коректна, защото ако $h$ е изоморфизъм на $\mathcal{A}$ върху $\mathcal{B}$, то $h^{-1}$ е изоморфизъм на $\mathcal{B}$ върху $\mathcal{A}$ и $h^{-1}$ е биекция на $B$ върху $A$, $h^{-1}(c^\mathcal{B}) = c^\mathcal{A}$, $h^{-1}(f^\mathcal{B}(b_1, b_2, \ldots, b_n)) = f^\mathcal{A}(h^{-1}(b_1), h^{-1}(b_2), \ldots, h^{-1}(b_n))$. 
+
+Значи, ако $h: A \overset{\cong}{\longrightarrow} B$, то $h^{-1}: B \overset{\cong}{\longrightarrow} A$.
+
+Ако две структури $\mathcal{A}$ и $\mathcal{B}$ са изоморфни, ще пишем $\mathcal{A} \cong \mathcal{B}$.
+\end{remark}
+
+\end{mydef}
+
+
+
+\begin{mydef}[Автоморфизъм]
+Изоморфизмите на $\mathcal{A}$ върху $\mathcal{A}$ образуват група относно $I\!d_\mathcal{A}, ^{-1}, \circ$ и се наричат автоморфизми, $Aut(\mathcal{A})$ -- група на автоморфизмите: 
+\begin{itemize}
+\item $I\!d_\mathcal{A}$ е автоморфизъм в $\mathcal{A}$ ;
+\item Ако $h$ е автоморфизъм в $\mathcal{A}$, то $h^{-1}$ е автоморфизъм в $\mathcal{A}$;
+\item Ако $h_1$ и $h_2$ са автоморфизми в $\mathcal{A}$, то $h_1\circ h_2$е също автоморфизъм в $\mathcal{A}$.
+\end{itemize}
+
+\begin{remark}
+Тези структури, за които $Aut(*)$ съдържа само един елемент -- неутралния, т.е. имат единствен автоморфизъм относно $I\!d_\mathcal{A}$ -- се наричат твърди.
+\end{remark}
+\begin{example}
+$<\mathbb{N}, \leq>$ е твърда структура, но $<\mathbb{Z}, \leq>$ не е, тъй като за всяко $a \in \mathbb{Z}$ изображението $h_a(m) = m + a$ е автоморфизъм в $<\mathbb{Z}, \leq>$.
+\end{example}
+
+\end{mydef}
+
+\begin{mydef}[Универсална формула] Формулите от вида $\forall y_1\forall y_2\ldots\forall y_n\psi$ е безкванторна, се наричат универсални формули.
+
+За $\varphi = \forall y_1\forall y_2\ldots\forall y_n\psi$, където $\psi$ е безкванторна, е вярно, че $ \mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)] \longrightarrow \mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$.
+\end{mydef}
+
+
+\begin{mydef}[Екзистенциална формула] Формулите от вида $\exists y_1\exists y_2\ldots\exists y_n\psi$ е безкванторна, се наричат универсални формули.
+
+За $\varphi = \exists y_1\exists y_2\ldots\exists y_n\psi$, където $\psi$ е безкванторна, е вярно, че $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longrightarrow \mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$.
+\end{mydef}
+
+\subsection*{Логически еквивалентни формули}
+
+\begin{mydef}[Логически еквивалентни формули]
+Казваме, че $\varphi$ и $\psi$ са логически еквивалентни $(\varphi \mymod \psi)$, ако всеки път, когато $\mathcal{A}$ е структура и $\nu$ е оценква в $\mathcal{A}$, имаме $\mathcal{A} \models_\nu \varphi \longleftrightarrow \mathcal{A} \models_\nu \psi$. Или записано по друг начин: $\|\varphi\|^\mathcal{A}[\nu] = \|\psi\|^\mathcal{A}[\nu]$.
+\end{mydef}
+
+\subsection*{Заместване на подформули с формули}
+
+\begin{mydef}
+Нека $\mathcal{A}$ е структура. Казваме, че предикатните формули от езика $\mathcal{L}$ $\varphi$ и $\psi$ са еквивалентни в $\mathcal{A}$, $\varphi\overset{\mathcal{A}}{\mymod} \psi$, ако за всяка оценка $\nu$ в $\mathcal{A}$ е изпълнено $\mathcal{A} \models_\nu \varphi \longleftrightarrow \mathcal{A} \models_\nu \psi$. $\varphi \overset{\mathcal{A}}{\mymod} \psi \longleftrightarrow \mathcal{A} \models \varphi \Leftrightarrow \psi$.
+\end{mydef}
+
+
+\subsection*{Заместване на индивидни променливи с термове}
+
+\begin{mydef}[Допустима замяна]
+Нека $\varphi$ е предикатна формула, $x$ е индивидна  променлива, $\tau$ е терм. Резултатът от едновременната замяна на всички свободни участия на $x$ във $\varphi$ с $\tau$ ще означаваме с $\varphi[\sfrac{x}{\tau}]$.
+
+Казваме, че едновременната замяна на свободните участия на $x$ във $\varphi, \varphi[\sfrac{x}{\tau}]$, е допустима замяна, ако никое свободно участие на $x$ във $\varphi$ не е в област на действие на квантор по променлива участваща в $\tau$.
+
+\begin{remark}
+Ако $x \cancel{\in} Var^{free}(\varphi)$, то за всеки терм $\tau \varphi[\sfrac{x}{\tau}]$ е допустима.
+\end{remark}
+
+\begin{remark}
+Ако $\tau$ е затворен терм, то за всяко $\varphi$ и всяко $x \varphi[\sfrac{x}{\tau}]$ е допустима замяна.
+\end{remark}
+
+\end{mydef}
+
+\subsection*{Преименуване на свързани променливи}
+\begin{mydef}[Вариант]
+Казваме, че $Qy\varphi[\sfrac{x}{y}]$ е вариант на $Qx\varphi$, ако:
+\begin{itemize}
+\item $\varphi[\sfrac{x}{y}]$ е допустима (т.е. свободните участия на $x$ във $\varphi$ не са в област на действие на квантор по $y$);
+\item $y \cancel{\in} Var^{free}[\varphi]$.
+\end{itemize}
+\end{mydef}
+
+\subsection*{Пренексна нормална форма}
+
+\begin{mydef}
+Казваме, че $\varphi$ е в \textbf{пренексна нормална форма (ПНФ)}, ако $\varphi = Q_1x_1Q_2x_2\ldots Q_nx_n\Theta$, където $x_1, x_2, \ldots, x_n$ са различни индивидни променливи $Q_1, Q_2, \ldots Q_n$ са квантори, $\Theta$ е безкванторна формула, $n \geq 0$.
+
+Думата $Q_1x_1Q_2x_2\ldots Q_nx_n$ се нарича \textbf{кванторен префикс} на $\varphi$, а $\Theta$ -- \textbf{матрица} на $\varphi$.
+
+Ако всичките $Q_1, Q_2, \ldots, Q_n$ са $\forall$, то казваме, че $\varphi$ е универсална.
+
+Ако всичките $Q_1, Q_2, \ldots, Q_n$ са $\exists$, то казваме, че $\varphi$ е екзистенциална.
+\end{mydef}
+
+\subsection*{Логическо следване}
+
+\begin{mydef}[Секвенциално следване]
+Нека $\Gamma\cup\{\psi\}$ е множество от предикатни формули. Казваме, че от $\Gamma$ логически следва $\psi (\Gamma \models \psi)$, ако всеки път, когато $\mathcal{A}$ е структура и $\nu$ е оценка в $\mathcal{A}$ от $\mathcal{A} \models_\nu \varphi$ за всяко $\varphi \in \Gamma$ следва, че $\mathcal{A} \models_\nu \psi$.
+\end{mydef}
+
+\begin{mydef}[Глобално следване]
+Казваме, че от $\Gamma$ глобално (моделно) следва $\psi \\ (\Gamma \models^g \psi)$, ако всеки път, когато $\mathcal{A}$ е структура, ако за всяка $\varphi \in \Gamma, \mathcal{A} \models \varphi$, то $\mathcal{A} \models \psi$.
+\end{mydef}
+
+\subsection*{Скулемизация}
+
+\begin{mydef}[Скулемизация]
+Алгоритъм, който по дадено множество от затворени формули $\Gamma$ дава множество от затворени формули $\Gamma^S$, такова че $\Gamma$ е изпълнимо тогава и само тогава, когато $\Gamma^S$ е изпълнимо и $\Gamma$ е неизпълнимо тогава и само тогава, когато $\Gamma^S$ е неизпълнимо.
+
+Това преобразувание е поточково, т.е. $\Gamma^S = \{\varphi^S\ |\ \varphi \in \Gamma\}$.
+
+$\Gamma \models \psi \longleftrightarrow \Gamma \cup \{\neg\psi\}$ е неизпълнимо $\longleftrightarrow \Gamma^S\cup\{(\neg\psi)^S\}$ е неизпълнимо.
+\end{mydef}
+
+\begin{mydef}[Скулемова нормална форма]
+Ако $\varphi$ е затворена и е в пренексна нормална форма, то $\varphi^S$ е затворена и универсална, но в разсширение на езика.
+
+$\varphi^S$ ще наричаме Скулемова нормална форма на $\varphi$.
+\end{mydef}
+
+\begin{mydef}[Алгоритъм за скулемизация]
+Ще дефинираме едностъпкова скулемизация (от $\varphi$ ще получаваме $\varphi^S$):
+\begin{itemize}
+\item $\varphi^S$ е затворена;
+\item $\varphi^S$ е в пренексна нормална форма;
+\item $\varphi^S$ ще има един квантор за $\exists$ по-малко от $\varphi$ (ако във $\varphi$ има $\exists$).
+\end{itemize}
+
+Нека $\varphi = Q_1x_1Q_2x_2\ldots Q_nx_n\Theta$ -- затворена формула, $x_1, x_2, \ldots, x_n$ са различни индивидни променливи, $Q_1, Q_2, \ldots, Q_n$ са квантори. Тогава $\varphi_S$:
+\begin{enumerate}
+\item Ако $Q_1 = Q_2 = \ldots = Q_n = \forall$, то $\varphi_S \models \varphi$;
+\item Ако $Q_1 = \exists$, т.е. $\varphi = \exists x\psi\ (\psi \leftrightharpoons Q_2x_2\ldots Q_nx_n\Theta)$, то $\varphi^S \leftrightharpoons \psi[\sfrac{x}{c_\varphi}]$, където $c_\varphi$ е нова индивидна променлива.
+\item Ако $Q_1 = Q_2 = \ldots = Q_k = \forall, Q_{k+1} = \exists$, т.е. $\varphi = \forall x_1\forall x_2\ldots\forall x_k\exists x_{k+1}\ldots\Theta$, то $\\ \varphi_S \leftrightharpoons \forall x_1\forall x_2\ldots\forall x_k(Q_{k+2}x_{k+2}\ldots Q_nx_n)[\sfrac{x_{k+1}}{f_\varphi(x_1, x_2,\ldots, x_k)}]$, където $f_\varphi$ е нов за езика функционален символ с арност $k$.
+
+Ако в кванторния префикс има точно $m>0$ квантора $\exists$, то $\varphi^S \leftrightharpoons \underbrace{\varphi_{SSS\ldots}}_{\text{m пъти}}$
+\end{enumerate}
+\end{mydef}
+
+\subsection*{Затворени универсални формули}
+
+\begin{mydef}[Затворен частен случай]
+Нека $\mathcal{L}$ е език, в който има поне една индивидна константа. Нека $\forall x_1\forall x_2\ldots \forall x_n\Theta$ е затворена формула, $\Theta$ е безкванторна формула и $x_1, x_2, \ldots, x_n$ са различни индивидни променливи.
+
+Нека $\tau_1, \tau_2, \ldots, \tau_n$ са произволни затворени термове от $\mathcal{L}$. Формулата $\Theta[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}]$ ще наричаме затворен частен случай на $\forall x_1\forall x_2\ldots\forall x_n\Theta$. Множеството на всички затворени частни случаи на универсална затворена формула $\varphi$ ще означаваме със $CSI(\varphi)$, Closed substitution instances, т.е. $CSI(\varphi) \leftrightharpoons \{\Theta[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}] : \tau_1, \tau_2, \ldots, \tau_n \in \Tau^{cl}_\mathcal{L}\}$.
+\end{mydef}
+
+\begin{mydef}
+Нека $\Delta$ е множество от безкванторни формули от $\mathcal{L}$. Можем да разгледаме формулите от $\Delta$ като съждителни формули над множеството от съждителни променливи $\mathbb{A}t_\mathcal{L}$. 
+
+Нека $\mathcal{A}$ е структура, $\nu$ оценка в $\mathcal{A}$. За всяка формула $\chi \in \mathbb{A}t_\mathcal{L}$ дефинираме $I_{\mathcal{A},\nu}(\chi) = \|\chi\|^\mathcal{A}[\nu]$. Тогава за всяка безкванторна формула $\varphi$ е изпълнено $\mathcal{A} \models_\nu \varphi \longleftrightarrow I_{\mathcal{A}, \nu}(\varphi) = T$. Тогава $\mathcal{A} \models_\nu \Delta \longrightarrow I_{\mathcal{A}, \nu} \models \Delta$.
+\end{mydef}
+
+\subsection*{Ербранови структури}
+
+\begin{mydef}[Ербранова структура]
+Нека $\mathcal{L}$ е предикатен език. Една структура $\mathcal{H}$ за езика $\mathcal{L}$ се нарича ербранова структура, ако:
+\begin{itemize}
+\item $\mathcal{H} = \mathcal{T}_\mathcal{L}^{cl}$ -- универсумът е множеството от затворените термове от езика $\mathcal{L}$;
+\item $c^\mathcal{H} = c$ за всяка индивидна константа от $\mathcal{L}$;
+\item $f^\mathcal{H}(\tau_1, \tau_2, \ldots, \tau_n) = f(\tau_1^\mathcal{H}, \tau_2^\mathcal{H}, \ldots, \tau_n^\mathcal{H})$ за всеки функционален символ $f, \#[f]=n$, за произволни $\tau_1, \tau_2, \ldots, \tau_n \in \Tau^{cl}_\mathcal{L}$
+\end{itemize}
+
+\begin{remark}
+$\mathcal{L}$ има поне една ербранова структура $\longleftrightarrow \mathcal{T}_\mathcal{L}^{cl} \neq \varnothing \longleftrightarrow \mathcal{L}$ има поне една индивидна константа.
+\end{remark}
+
+\begin{remark}
+Едно множество от безкванторни формули е изпълнено $\longleftrightarrow$ то е изпълнено в ербранова структура.
+\end{remark}
+
+\end{mydef}
+
+\subsubsection*{Свободни ербранови структури}
+
+\begin{mydef}[Свободна ербранова структура]
+Една структура $\mathcal{H}$ се нарича свободна ербранова структура за езика $\mathcal{L}$, ако:
+\begin{itemize}
+\item $\mathcal{H} = \mathcal{T}_\mathcal{L}$ -- универсумът е множеството от всички термове от $\mathcal{L}$
+\item $c^\mathcal{H} \leftrightharpoons c$, за всяка индивидна константа $c \in \mathbb{C}onst_\mathcal{L}$
+\item $f^\mathcal{H}(\tau_1, \tau_2, \ldots, \tau_n) = f(\tau_1, \tau_2, \ldots, \tau_n)$, за всеки $n$-арен функционален символ $f$ и за всеки $n$ терма.
+\end{itemize}
+\end{mydef}
+
+
+\subsection*{Съждителна резолюция}
+
+\begin{mydef}
+Нека $\varphi$ е съждителна формула и $\varphi = \psi_1 \& \psi_2\&\ldots\&\psi_n$, където $\psi_i$ са елементарни дизюнкции, тъй като $\Theta \lor \Theta \mymod \Theta$, на всяка елементарна дизюнкция $\psi$ ще съпоставим крайното множество от литералите (т.е. $P$ или $\neg P$), които участват във формулата $\psi$.
+
+$\psi \longrightarrow \mathbb{D}_\psi$ -- крайно множество от литерали.
+
+$L_1 \lor L_2 \lor \ldots \lor L_k $ -- дизюнкция от литерали.
+
+$I \models L_1 \lor L_2 \lor \ldots \lor L_k \longleftrightarrow \exists i, 1 \leq i \leq k, I\models L_i$.
+
+Следователно за едно крайно множество от литерали от $\mathbb{D}_\psi, I \models \mathbb{D}_\psi \longleftrightarrow$ има литерал $L \in \mathbb{D}_\psi, I \models L$. Така $I \models \psi \longleftrightarrow I \models \mathbb{D}_\psi$.
+
+\end{mydef}
+
+\begin{mydef}[Дизюнкт]
+Дизюнкт $\mathbb{D}$ ще наричаме крайно множество от литерали, $I$ е булева интерпретация. Казваме, че $I \models \mathbb{D}$, ако съществува $L \in \mathbb{D}, I \models L$.
+
+$\psi$ е елементарна дизюнкция, следователно $\mathbb{D}_\psi$ е дизюнкт, $I \models \psi \longleftrightarrow I \models \mathbb{D}_\psi$. Ако $\mathbb{D} \neq \varnothing$ и $\mathbb{D}$ е дизюнкт, то има формула $\psi$, такава че $\mathbb{D} = \mathbb{D}_\psi$.
+
+\begin{remark}
+Има само един дизюнкт, който не е от вида $\mathbb{D}_\psi$ за някоя елементарна дизюнкция $\psi$. Това е празното множество от литерали. Този дизюнкт ще наричаме ``празен дизюнкт'' и ще го означаваме с $\blacksquare$.
+\end{remark}
+
+\begin{remark}
+Нека $I$ е булева интерпретация. $\blacksquare$ не е верен за всяка булева интерпретация. $\blacksquare$ е неизпълним -- няма модел. Всеки дизюнкт, различен от $\blacksquare$ има поне един модел.
+\end{remark}
+\end{mydef}
+
+\begin{mydef}[Тавтология]
+Нека казваме за един дизюнкт $\mathbb{D}$, че е тавтология, ако всеки път, когато $I$ е булева интерпретация, $I \models \mathbb{D}$.
+
+$\mathbb{D}$ е тавтология $\longleftrightarrow$ има променлива $P: P \in \mathbb{D}$ и $\neg P \in \mathbb{D}$.
+\end{mydef}
+
+
+\begin{mydef}[Дуален литерал]
+Нека $L$ е литерал. Дуален на $L$ литерал ще наричаме $L^\partial = \begin{cases}
+P, \ \ \text{ако } L = P\\
+\neg P, \text{ако } L = \neg P
+\end{cases} $
+\end{mydef}
+
+\begin{mydef}[Модел]
+Казваме, че $I$ е модел за $S$, където $S$ е множество от дизюнкти, ако за всеки дизюнкт $\mathbb{D} \in S, I \models \mathbb{D}$. Така, $I \models \varphi \longleftrightarrow I \models S_\varphi$. За всяка булева интерпретация $I, I \models \varnothing$. $S$ може и да е безкрайно.
+
+Нека $\Delta$ е множество от съждителни формули, $I$ е булева интерпретация, $I \models \Delta \longleftrightarrow \forall \varphi \in \Delta, I \models \varphi$. За всяка булева интерпретация $I, I \models \Delta \longleftrightarrow \underset{\varphi \in \Delta}{\bigcup} S_\varphi$.
+
+\begin{remark}
+$\Delta$ е изпълнимо $\longleftrightarrow S_\Delta$  е изпълнимо. Ако $\blacksquare \in S$, то $S$ е неизпълнимо.
+\end{remark}
+\end{mydef}
+
+\subsection*{Правило на съждителната резолюция}
+
+\begin{mydef}
+Нека $\mathbb{D}_1$ и $\mathbb{D}_2$ са дизюнкти, а $L$ е литерал. 
+
+Казваме, че правилото за съждителната резолюция е приложимо към двойката $\mathbb{D}_1, \mathbb{D}_2$ относно $L$, ако $L \in \mathbb{D}_1$ и $L^\partial \in \mathbb{D}$.
+
+Бележим $!\mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2)$.
+
+\begin{remark}
+Ако $\mathbb{D}_1$ и $\mathbb{D}_2$ са дизюнкти и $L$ е литерал, то алгоритмично разпознаваемо е дали $!\mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2)$. 
+
+Резултат от прилагането на правилото за резолюцията към $\mathbb{D}_1$ и $\mathbb{D}_2$ относно $L$ имаме само когато правилото е приложимо и този резултат е $\mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2) \leftrightharpoons \{\mathbb{D}_1\setminus \{L\} \cup \{\mathbb{D}_2\setminus \{L^\partial\}\}$.
+\end{remark}
+\end{mydef}
+
+\begin{mydef}[Резолвента]
+$\mathbb{D}$ е резолвента на $\mathbb{D}_1$ и $\mathbb{D}_2$, ако има литерал $L : \mathbb{D} =  \mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2)$.
+\end{mydef}
+
+\begin{mydef}[Резолютивен извод]
+Нека $S$ е множество от дизюнкти. Резолютивен извод от $S$ наричаме крайна редица от дизюнкти $\mathbb{D}_1, \mathbb{D}_2, \ldots, \mathbb{D}_n :$ всеки неин член е или от $S$, или е резолвента на два предходни члена.
+\end{mydef}
+
+\begin{mydef}
+Нека $S$ е множество от дизюнкти и $\mathbb{D}$ е дизюнкт. Казваме, че $\mathbb{D}$ е резолютивно изводим от $S$, ако има резолютивен извод от $S$, чийто последен член е $\mathbb{D}$, т.е. има крайна редица $\mathbb{D}_1, \mathbb{D}_2, \ldots, \mathbb{D}_n$, такава че тя е резолютивен извод и $\mathbb{D}_n = \mathbb{D}$.
+
+Пишем $S \overset{r}{\vdash} D$.
+
+\begin{remark}
+Нека $S$ е множество от дизюнкти, $I$ е булева интерпретация и $S \overset{r}{\vdash} D$. Тогава, ако $I \models S$, то $I \models \mathbb{D}$.
+\end{remark}
+\end{mydef}
+
+\subsection*{Трансверзали за фамилии от множества}
+
+\begin{mydef}[Трансверзала]
+Нека $A$ е множество, чиито елементи са множества. $A$ е фамилия от множества. Казваме, че едно множество $Y$ е трансверзала за $A$, ако за всеки елемент $x \in A, Y \cap x = \varnothing$.
+\end{mydef}
+
+\begin{mydef}[Минимална трансверсала]
+Нека $A$ е фамилия от множества. За едно множество $Y$ казваме, че е минимална трансверзала за $A$, ако:
+\begin{itemize}
+\item $Y$ е трансверзала за $A$;
+\item Ако $Y' \subseteq Y$ и $Y'$ е трансверзала, то $Y' = Y$.
+\end{itemize}
+\end{mydef}
+
+\subsection*{Хорнови дизюнкти}
+
+\begin{mydef}[Хорнов дизюнкт]
+Един съждителен дизюнкт $\mathbb{D}$ се нарича хорнов, ако съдържа най-много един позитивен литерал.
+\end{mydef}
+
+\begin{mydef}[Факт]
+$\{P\}$, където $P$ е позитивен литерал, т.е. съждителна променлива или атомарна формула. Дизюнкти от този вид се наричат факти.
+\end{mydef}
+
+
+\begin{mydef}[Правило]
+$\{P, \neg Q_1, \ldots, \neg Q_n\}, n \geq 1$ -- правило.
+
+$P :- Q_1, Q_2, \ldots, Q_n$.
+
+$P \lor \neg Q_1\lor \ldots \lor \neg Q_n \mymod \neg(Q_1\&Q_2\&\ldots Q_n) \lor P \mymod Q_1\&Q_n\&\ldots\& Q_n \Rightarrow P$.
+\end{mydef}
+
+\begin{mydef}[Цели]
+$\{\neg Q_1, \neg Q_2 \ldots , \neg Q_n\}, n \geq 1$.
+\end{mydef}
+
+\begin{mydef}[Хорнова програма]
+Хорнова програма е крайно множество от правила и факти.
+\end{mydef}
+
+\begin{mydef}
+Нека $I : PVar \longrightarrow \{T, F\}$. Нека съпоставим $A_I = \{P\ |\ I(P) = T\} \subseteq PVar$. 
+
+Обратно, ако $A$ е множество от съждителни променливи, то на $A$ съпоставяме характеристичната ѝ функция $I(P) = \begin{cases}
+T, P \in A \\
+F, P \cancel{\in} A
+\end{cases}
+$.
+
+Ако на $A$ съпоставим $I_A$ и на $I_A$ съпоставим $A_{I_A}$, ще получим $A = A_{I_A}$. Аналогично, $I = I_{A_I}$.
+
+В множеството на всички булеви интерпретации дефинираме частична наредба: \[I \preccurlyeq J \leftrightharpoons A_I \subseteq A_J\]
+\end{mydef}
+
+\subsection*{Изоморфни влагания. Хомоморфизми и изоморфизми.}
+
+\begin{mydef}
+Нека $A_0 \subseteq A^n$ и нека $A_0$ е определимо. Нека $h$ е автоморфизъм в структурата $\mathcal{A}$. 
+
+Тогава за произволни $a_1, a_2, \ldots, a_n \in A$ е изпълнено \[<a_1, a_2, \ldots, a_n> \in A_0 \Leftrightarrow <h(a_1), h(a_2), \ldots, h(a_n)> \in A_0\]
+\end{mydef}
+
+\begin{mydef}
+Нека $h$ е изоморфизъм на $\mathcal{A}$ върху $\mathcal{B}$ и $\varphi$ -- формула.
+
+Ако $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$ и $\varphi$ е затворена, то $\mathcal{A} \models \varphi \longleftrightarrow \mathcal{B} \models \varphi$.
+\end{mydef}
+
+\begin{mydef}
+Нека $A_0 \subseteq A^n$ и $h$ е автоморфизъм в структурата $\mathcal{A}$.
+
+Ако $\exists <a_1, a_2, \ldots, a_n> \in A_0$, такива че $<a_1, a_2, \ldots, a_n> \in A_0 \in A_0$, но $<h(a_1), h(a_2), \ldots, h(a_n)> \in A_0 \cancel{\in} A_0$, то $A_0$ не е определимо множество.
+
+Пример: $<\mathbb{N}, \leq>$.
+\end{mydef}
+
+\begin{mydef}[Подструктура]
+Нека $\mathcal{A}$ и $\mathcal{B}$ са структури за $\mathcal{L}$, казваме че $\mathcal{A}$ е подструктура на $\mathcal{B}$, ако $I\!d_A$ е изоморфно влагане на $\mathcal{A}$ в $\mathcal{B}$, т.е.:
+\begin{itemize}
+\item $A \subseteq B$
+\item $c^\mathcal{A} = c^\mathcal{B}$
+\item $f^\mathcal{A}(a_1, a_2, \ldots, a_n) = f^\mathcal{B}(a_1, a_2, \ldots, a_n)$, такива че на $a_1, a_2, \ldots, a_n$ действа изоморфно влагане $a_1, a_2, \ldots, a_n \in A$
+\item $<a_1, a_2, \ldots, a_n> \in p^\mathcal{A} \longleftrightarrow <a_1, a_2, \ldots, a_n> \in p^\mathcal{B}$, за $a_1, a_2, \ldots, a_n \in A$
+\end{itemize}
+
+Пример: $<\mathbb{Q}, \leq>$ за $<\mathbb{R}, \leq>$
+\end{mydef}
+
+\begin{mydef}
+Нека $\mathcal{L}$ е език без формално равенство, $\mathbb{C}onst_\mathcal{L} \neq \varnothing$, $\mathcal{H}$ е ербранова структура за $\mathcal{L}$, а $\mathcal{H}^{free}$ -- свободна ербранова структура.
+
+\begin{enumerate}
+\item За $\mathcal{H}$ -- ербранова структура, тогава $\exists H^{free}$ -- свободна ербранова структура, за която $\mathcal{H}$ е подструктура.
+\item За $\forall H^{free}$ -- свободни ербранови структури $\exists \mathcal{H}$ -- ербранова структура , такава че $\mathcal{H}$ е подструктура на $\mathcal{H}^{free}$
+\end{enumerate}
+\end{mydef}
+
+\begin{mydef}
+Нека $\mathcal{A}$ е подструктура на $\mathcal{B}$:
+\begin{enumerate}
+\item Нека $\varphi[x_1, x_2, \ldots, x_n]$ и $\varphi$ е безкванторна, тогава за произволни $a_1, a_2, \ldots, a_n \in A$, $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$
+\item Нека $\varphi[x_1, x_2, \ldots, x_n]$ и $\varphi$ е универсална формула, тогава $\mathcal{B} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longrightarrow \mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$ за $a_1, a_2, \ldots, a_n \in A$
+\item Нека $\varphi[x_1, x_2, \ldots, x_n]$ и $\varphi$ е екзистенциална формула, тогава  $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longrightarrow \mathcal{B} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$ за $a_1, a_2, \ldots, a_n \in A$
+\end{enumerate}
+\end{mydef}
+
+\begin{mydef}[Логическа еквивалентност на формули]
+Нека $\varphi$ и $\psi$ са предикатни формули. 
+
+Казваме, че $\varphi$ и $\psi$ са логически еквивалентни и записваме $\varphi \mymod \psi$, ако за всяка структура $\mathcal{A}$ и за всяка оценка $\nu$ имаме, че $\mathcal{A} \models_\nu \varphi \longleftrightarrow \mathcal{A} \models_\nu \psi$.
+
+$\varphi \modeq \psi \longleftrightarrow$ във всяка структура $\varphi$ и $\psi$ определят едни и същи множества, $\varphi$ и $\psi$ имат свободни променливи между $\{x_1, x_2, \ldots, x_n\}$.
+
+$\varphi \mymod \psi \longleftrightarrow \models\!(\varphi \Leftrightarrow \psi)$  
+\end{mydef}
+
+\begin{mydef}[Предикатна тавтология]
+Една предикатна формула $\varphi$ се нарича предикатна тавтология, ако за $\forall \mathcal{A}$  -- структура и за $\forall \nu$ -- оценка в $\mathcal{A}$, $\mathcal{A} \models_\nu \varphi$, т.е. $\|\varphi\|^\mathcal{A} = T$.
+
+$H_\Leftrightarrow(l_1, l_2) = T \longleftrightarrow l_1 = l_2$
+\end{mydef}
+
+\begin{mydef}
+Нека $\mathcal{A}$ е структура, $\varphi$ и $\psi$ са предикатни формули. Казваме, че $\varphi$ и $\psi$ са логически еквивалентни в $\mathcal{A}$, $\varphi \mymod_\mathcal{A} \psi$, ако за $\forall \nu$ -- оценка в $\mathcal{A}$ е в сила $\|\varphi\|^\mathcal{A}[\nu] = \|\psi\|^\mathcal{A}[\nu]$.
+\end{mydef}
+
+
+\begin{mydef}[Заместване на индивидни променливи и предикатни формули]
+Нека $x$ е индивидна променлива, $\tau$ е терм. С $\varphi[\sfrac{x}{\tau}]$ ще означаваме резултата от едновременната замяна на всички свободни участия на $x$ във $\varphi$ с $\tau$.
+
+Казваме, че замяната е \textbf{допустима}, ако свободните участия на $x$ във $\varphi$ не са в област на действие на квантор по променлива от $\tau$.
+
+\begin{remark}
+Нека $\varphi$ е безкванторна. Тогава за всяко $x$ и всеки терм $\tau \varphi[\sfrac{x}{\tau}]$  е допустима.
+\end{remark}
+\begin{remark}
+Ако $\tau$ е затворен терм, то за всяка формула $\varphi$ и всяко $x \varphi[\sfrac{x}{\tau}$ е допустима.
+\end{remark}
+\end{mydef}
+
+\begin{mydef}[Преименуване на свързани променливи]
+Нека $\varphi$ е предикатна формула, $x \neq z, Q \in \{\forall, \exists\}$.
+
+Казваме, че формулта $Qz[\varphi[\sfrac{x}{z}]]$ е получена от $Qx\varphi$ с преименуване, ако са изпълнени условията:
+\begin{itemize}
+\item $\varphi[\sfrac{x}{z}]$ е допустима замяна (свободните участия на $x$ във $\varphi$ не са в област на действие на $Q$ по $z$)
+\item $z \cancel{\in} Var^{free}[\varphi]$
+\end{itemize}
+\end{mydef}
+
+
+\newpage
+\fi
+
+\ifcase\Properties\or
+\section*{Свойства}
+
+\subsection*{Булева еквивалентност на съждителни формули}
+\begin{prop}[Логическа еквивалентност]
+$\ $
+
+\begin{enumerate}
+\item $\varphi \mymod \varphi$;
+\item $\varphi \mymod \psi \rightarrow \psi \mymod \varphi$ - симетричност;
+\item $\varphi \mymod \psi, \psi \mymod \chi \rightarrow \varphi \mymod \chi$ -- транзитивност;
+\item $\varphi \mymod \varphi' \rightarrow \neg\varphi \mymod \neg\varphi'$; \label{sv-1-4}
+\item $\varphi \mymod \varphi', \psi \mymod \psi' \rightarrow (\varphi \sigma \psi) \mymod (\varphi' \sigma \psi'), \sigma \in \{\&, \lor, \Rightarrow, \Leftrightarrow\}$. \label{sv-1-5}
+\makebox(0,0){\put(0,3\normalbaselineskip){%
+               $\left.\rule{0pt}{1.5\normalbaselineskip}\right\}$ устойчивост на съждителните съюзи}}
+
+\end{enumerate}
+
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item Нека $\varphi \mymod \varphi'$, т.е. за всяка булева интерпретация $I$, $I(\varphi) = I(\varphi')$.
+
+Нека $J_0$ е булева интерпретация - произволна, тогава $J(\varphi) = J(\varphi')$ и $J(\neg\varphi) = H_{\neg}(J(\varphi)) = H_{\neg}(J(\varphi')) = J(\neg\varphi')$. 
+
+Значи, за всяка булева интерпретация $I$, $I(\neg\varphi) = I(\neg\varphi')$, т.е. $\neg\varphi \mymod \neg\varphi'$.
+
+\item Нека $I_0$ е булева интерпретация. 
+
+Тогава, тъй като $\varphi \mymod \varphi'$, имаме $I(\varphi) = I(\varphi')$, и от $\psi \mymod \psi'$ имаме $I(\psi) = I(\psi')$.
+
+Значи $I(\varphi \sigma \psi) = H_\sigma(I(\varphi), I(\psi)) = H_\sigma(I(\varphi'), I(\psi')) = I(\varphi' \sigma \psi')$. 
+
+Следователно $(\varphi \sigma \psi) \mymod (\varphi' \sigma \psi')$.
+\end{enumerate}
+
+\end{proof}
+\fi
+
+\begin{remark}
+Формулите образуват алгебрична система и $\mymod$ разбива това множество на класове, за които алгебричните операции са съгласувани.
+\end{remark}
+\end{prop}
+
+\begin{prop}[Полезни еквивалентности]
+$\ $
+
+\begin{enumerate}
+\item $(\varphi \lor \varphi) \mymod \varphi$, $(\varphi\ \&\ \varphi) \mymod \varphi$ -- идемпотентност на $\lor, \&$;
+\item $(\varphi	\lor \psi) \mymod (\psi \lor \varphi), (\varphi\ \&\ \psi) \mymod (\psi\ \&\ \varphi)$ -- комутативност на $\lor, \&$;
+\item $(\varphi \lor (\psi \lor \chi)) \mymod ((\varphi \lor \psi) \lor \chi), (\varphi\ \&\ (\psi\ \&\ \chi)) \mymod ((\varphi\ \&\ \psi)\ \&\ \chi)$ -- асоциативност на $\lor, \&$;
+\item $(\varphi \lor (\psi\ \&\ \chi)) \mymod ((\varphi \lor \psi)\ \&\ (\varphi \lor \chi))$;
+\item $(\varphi\ \&\ (\psi \lor \chi)) \mymod ((\varphi\ \&\ \psi) \lor (\varphi\ \&\ \chi))$;
+\makebox(0,0){\put(0,3\normalbaselineskip){%
+               $\left.\rule{0pt}{1.5\normalbaselineskip}\right\}$ дистрибутивен закон за $\lor, \&$}}
+\item $\neg\neg\varphi \mymod \varphi$ -- класическа логика: двойното отрицание пада;
+\item $\neg(\varphi \lor \psi) \mymod (\neg\varphi\ \&\ \neg\psi)$;
+\item $\neg(\varphi\ \&\ \psi) \mymod (\neg\varphi \lor \neg\psi)$;
+\makebox(0,0){\put(0,3\normalbaselineskip){%
+               $\left.\rule{0pt}{1.5\normalbaselineskip}\right\}$ де Морган}}
+\item $(\varphi \Rightarrow \psi) \mymod (\neg\varphi \lor \psi)$; \label{sv-2-9}
+\item $(\varphi \Rightarrow \psi) \mymod (\varphi\ \& \ \neg\psi)$
+\item $(\varphi \Leftrightarrow \psi) \mymod ((\varphi\ \&\ \psi) \lor (\neg\varphi\ \&\ \neg\psi))$;
+\makebox(0,0){\put(0,4.8\normalbaselineskip){%
+               $\left.\rule{0pt}{3,2\normalbaselineskip}\right\}$ абревиатури за $\Rightarrow, \Leftrightarrow$}}
+\item $(\varphi \Leftrightarrow \psi) \mymod ((\varphi \Rightarrow \psi)\ \&\ (\psi \Rightarrow \varphi))$;
+\item Нека $\varphi$ е съждителна тавтология, тогава за всяка формула $\psi$ имаме следните логически еквивалентности:
+\begin{itemize}
+\item $(\varphi \lor \psi) \mymod \varphi$;
+\item $(\varphi\ \&\ \psi) \mymod \psi$.
+\end{itemize}
+\end{enumerate}
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+\begin{enumerate}
+\setcounter{enumi}{8}
+\item 
+\begin{itemize}
+\item[$\Rightarrow)$]
+Нека $I_0$ е произволна булева интерпретация.
+
+Нека $I(\varphi \Rightarrow \psi) = F = H_\Rightarrow(I(\varphi), I(\psi))$. Следователно $I(\varphi) = T, I(\psi) = F, I(\neg\varphi) = H_\neg(\varphi) = F$.
+
+Така $I(\neg\varphi) = I(\psi) = F$. Следователно $H_\lor(I(\neg\varphi), I(\psi)) = F = I((\neg\varphi \lor \psi))$.
+
+\item[$\Leftarrow)$]
+Нека $I((\neg\varphi \lor \psi)) = F$.
+
+Тогава $H_\lor(I(\neg\varphi), I(\psi)) = F$. Значи $I(\neg\varphi) = I(\psi) = F$. $I(\neg\varphi) = H_\neg(\varphi) = F$, следователно $I(\varphi) = T$.
+
+Следователно $H_\Rightarrow(I(\varphi), I(\psi)) = F = I((\varphi \Rightarrow \psi))$.
+\end{itemize}
+
+\end{enumerate}
+
+\end{proof}
+\fi
+\end{prop}
+
+\iffalse
+\begin{proof}
+(\ref{sv-2-9}) Нека $I$ е произволна булева интерпретация:
+\begin{enumerate}
+\item $I[\varphi \Rightarrow \psi] = T$, т.е. $H_\Rightarrow[I[\varphi], I[\psi]] = T$, т.е. или $I[\varphi] = I[\psi] = T$, или $I[\varphi] = F$ и $I[\psi] = T$, или $I[\varphi] = I[\psi] = F$, където и за трите възможности е изпълнено $I[\neg\varphi \lor \psi] = H_\lor[H_\neg[I[\varphi]], I[\psi]] = T$.
+\item $I[\varphi \Rightarrow \psi] = F$, т.е. $H_\Rightarrow[I[\varphi], I[\psi]] = F$, т.е. $I[\varphi] = T$ и $I[\psi] = F$, където е изпълнено $I[\neg\varphi \lor \psi] = H_\lor[H_\neg[I[\varphi]], I[\psi]] = F$.
+\end{enumerate}
+\end{proof}
+\fi
+
+\subsection*{Заместване на съждителни променливи със съждителни формули}
+
+\begin{prop}
+$\ $
+\begin{enumerate}
+\item $\varphi \models \psi$ тогава и само тогава, когато $\varphi \Rightarrow \psi$ е булева тавтология;
+\item ако $\varphi$ е противоречие, то за всяка формула $\psi$, $\varphi \models \psi$;
+\item ако $\psi$ е съждителна тавтология, то за всяка формула $\varphi$, $\varphi \models \psi$;
+\item ако $\varphi$ не е противоречие и $\psi$ не е тавтология, и $\varphi \models \psi$, то $\varphi$ и $\psi$ имат поне една обща съждителна променлива.
+\end{enumerate}
+
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+\begin{enumerate}
+\item
+\begin{itemize}
+\item[$\Rightarrow)$] Допускаме, че $\varphi \Rightarrow \psi$ не е булева тавтология. 
+
+Тогава има булева интерпретация $I_0$, при която $I_0 \cancel{\models} \varphi \Rightarrow \psi$. Нека $I_0$ е такава булева интерпретация.
+
+Тогава $I(\varphi) = T$ и $I(\psi) = F$. От $I(\varphi) = T$ следва $I \models \varphi$. Но $\varphi \models \psi$. Следователно $I \models \varphi$, т.е. $I(\psi) = T$. Противоречие.
+\item[$\Leftarrow)$] Обратно, нека $\varphi \Rightarrow \psi$ е булева тавтология. Да допуснем, че $\varphi \models \psi$. Нека $I_0$ е булева интерпретация, за която $I_0 \models \varphi, I_0 \cancel{\models} \psi$.
+
+Тогава $I(\varphi) = T$ и $I(\psi) = F$. Следователно $I((\varphi \Rightarrow \psi)) = H_\Rightarrow(I(\varphi), I(\psi)) = F$. Значи $\varphi \Rightarrow \psi$ не е булева тавтология. Противоречие.
+\end{itemize}
+\begin{remark}
+$\varnothing \models \varphi$ тогава и само тогава, когато $\varphi$ е съждителна тавтология. Вместо $\varnothing \models \varphi$, пишем $\models \varphi$. 
+\end{remark}
+\begin{itemize}
+\item[$\Rightarrow)$] Нека $\models \varphi$. Нека $I_0$ е произволна булева интерпретация. Тогава $I_0$ е модел на $\varnothing$. От това, че $I_0$ е модел за $\varnothing$ получаваме, че $I_0$ е модел за $\varphi$, т.е. $\varphi$ е съждителна тавтология.
+\item[$\Leftarrow)$] Обратно, нека $\varphi$ е съждителна тавтология. Нека $I_0$ е произволен модел за $\varnothing$. Тъй като $\varphi$ е съждителна тавтология, $I(\varphi) = T$. Така всеки модел на празното множество е модел на $\varphi$.
+\end{itemize}
+
+\setcounter{enumi}{3}
+\item Тъй като $\varphi$ не е противоречие, тогава избираме $I_0: I(\varphi) = T$ и тъй като $\psi$ не е тавтология, тогава избираме булева интерпретация $J_0: J(\psi) = F$.
+
+Дефинираме $K_0(P) = \left\{
+                \begin{array}{ll}
+                  I_0(P), \text{ако } P \text{ участва във } \varphi;\\
+                  J_0(P), \text{ако } P \text{ не участва във } \varphi.\\
+                \end{array}
+              \right.$
+              
+Тогава за всяко $P \in Var(\varphi), K_0(P) = I_0(P)$. Следователно $K(\varphi) = I(\varphi) = T$.
+
+Да допуснем, че $\varphi$ и $\psi$ нямат общи променливи. Тогава за всяка променлива $P$, която участва в $\psi$, $P$ не участва във $\varphi$. Следователно, $K_0(P) = J_0(P)$. Следователно $K(\psi) = J(\psi) = F$.
+
+Тогава $K(\varphi) = T, K(\psi) = F$, но $\varphi \models \psi$. Противоречие. Следователно допускането е невярно.
+
+\end{enumerate}
+\end{proof}
+\fi
+\begin{remark}
+Можем да разглеждаме едновременно модели за $\varphi_1\ \&\ \varphi_2\ \&\ \ldots\ \&\ \varphi_n$ и $\{\varphi_1, \varphi_2, \ldots, \varphi_n\}$.
+\end{remark}
+\end{prop}
+
+\begin{prop}[Логическо следване]
+$\ $
+
+\begin{enumerate}
+\item $\psi \in \Gamma \longrightarrow \Gamma \models \psi$;
+\item Нека $\Gamma$ и $\Delta$ са множества от съждителни формули. Нека всеки път, когато $\varphi \in \Delta, \Gamma \models \varphi$. Нека $\Delta \models \psi$. Тогава $\Gamma \models \psi$;
+\item $\Gamma' \subseteq \Gamma$ и $\Gamma' \models \psi \longrightarrow \Gamma \models \varphi$ -- монотонност;
+\item Семантична дедукция: От $\Gamma \cup \{\varphi\} \models \psi \longleftrightarrow \Gamma \models \varphi \Rightarrow \psi$. Означаваме: $\Gamma, \varphi \models \psi$, т.е. с добавянето на аксиомата $\varphi$ към $\Gamma$, $\Gamma$ става модел за $\psi$.
+\item $\varphi_1, \varphi_2, \ldots, \varphi_n \models \psi \longleftrightarrow\ \models (\varphi_1\ \&\ \varphi_2\ \& \ldots \&\ \varphi_n) \Rightarrow \psi$
+\item $\Gamma \models \varphi \longleftrightarrow \Gamma \cup \{\neg\varphi\}$ е неизпълнимо множество
+\item Компактност на логическото следване: $\\ \Gamma \models \varphi \longleftrightarrow$ има крайно $\Gamma_0 \subseteq \Gamma, \Gamma_0 \models \varphi \mymod \Gamma$ е неизпълнимо $\longleftrightarrow$ има крайно $\Gamma_0 \subseteq \Gamma, \Gamma_0$ е неизпълнимо $\mymod \Gamma$ е изпълнимо $\longleftrightarrow$ всяко крайно $\Gamma_0 \subseteq \Gamma, \Gamma_0$ е изпълнимо.
+\item $\varnothing \models \psi \longleftrightarrow \models \psi$ -- вярна при всяка булева интерпретация (тавтология).
+\item Ако $\Gamma$ е неизпълнимо, то за всяка формула $\psi, \Gamma \models \psi$ (от лъжата следва всичко).
+\item Нека $\models \psi$, тогава за всяко множество $\Gamma, \Gamma \models \psi$.
+\end{enumerate}
+
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item Нека $\Gamma' \subseteq \Gamma$ и $\Gamma' \models \varphi$. Нека $I_0$ е произволен модел на $\Gamma, I_0 \models \Gamma$. т.е. ако $\psi \in \Gamma \rightarrow I(\psi) = T$, $I_0 \models \psi$. Нека $\psi \in \Gamma'$, тогава $\psi \in \Gamma$, значи $I_0 \models \psi$. С други думи, $I_0 \in \Gamma'$. Но $\Gamma' \models \varphi$, поради което $I_0 \models \varphi$. Тъй като $I_0$ е произволен модел на $\Gamma, \Gamma \models \varphi$.
+\item 
+\begin{itemize}
+\item[$\Rightarrow)$](Достатъчност) $\Gamma, \varphi \models \psi$. Нека $I_0$ е произволен модел за $\Gamma$.
+\begin{itemize}
+\item[1-ви случай:] Нека $I_0 \models \varphi$. Тогава $I_0 \models \Gamma \cup \{\varphi\}$, но $\Gamma \cup \{\varphi\} \models \psi$. Следователно $I_0 \models \psi$.
+\item[2-ри случай:] Нека $I_0 \cancel{\models} \varphi$, т.е. $I(\varphi) = F$. Тогава $H_\Rightarrow(I(\varphi), I(\psi)) = T$, значи $I((\varphi \Rightarrow \psi)) = T$. Следователно $I_0 \models \varphi \Rightarrow \psi$.
+\end{itemize}
+Така и в двата случая $I_0 \models \varphi \Rightarrow \psi$. Значи $\Gamma \models \varphi \Rightarrow \psi$.
+
+\item[$\Leftarrow)$] (Необходимост) Нека $\Gamma \models \varphi \Rightarrow \psi$. Нека $I_0$ е модел за $\Gamma \cup \{\varphi\}$. Тогава за всяка формула $\chi \in \Gamma \cup \{\varphi\}$ имаме $I(\chi) = T$. В частност, $\chi \in \Gamma$ влече $I(\chi) = T$, т.е. $I_0 \models \Gamma$. Ако $\chi = \varphi$, то $I(\varphi) = T$. Значи $I(\varphi  \Rightarrow \psi) = T$, $I(\varphi) = T$ и $H_\Rightarrow(I(\varphi), I(\psi)) = T$. Следователно $I(\psi) = T$, т.е. $I \models \psi$.
+\end{itemize}
+Следователно $\Gamma \cup \{\varphi\} \models \psi$.
+\setcounter{enumi}{5}
+\item
+\begin{itemize}
+\item[$\Rightarrow)$] (Достатъчност) Нека $\Gamma \models \varphi$. Да допуснем, че $\Gamma \cup \{\neg\varphi\}$ е изпълнимо. Тогава това множество има модел. Нека $I_0 \models \Gamma \cup \{\neg\varphi\}$. Следователно $I_0 \models \Gamma$ и $I_0 \models \neg\varphi$. Значи $I(\neg\varphi) = T$, но $I(\neg\varphi) = H_\neg(I(\varphi))$, следователно $I(\varphi) = F$, но от $\Gamma \models \varphi$ следва, че $I_0 \models \varphi$  и $I(\varphi) = T$. Противоречие.
+\item[$\Leftarrow)$] (Необходимост) Нека $\Gamma \cup \{\neg\varphi\}$ е неизпълнимо. Нека $I_0$ е произволен модел на $\Gamma$. Тъй като $\Gamma \cup \{\neg\varphi\}$ няма модел следва, че 	$I_0 \cancel{\models} \neg\varphi$, т.е. $I_0 \models \varphi$. $I_0$ е произволен модел на $\Gamma$, поради което $\Gamma \models \varphi$.
+\end{itemize}
+\end{enumerate}
+\end{proof}
+\fi
+
+\end{prop}
+
+\subsection*{Предикатно смятане от първи ред}
+
+\begin{prop}
+Ако $\varphi$ е затворена формула, то $\mathcal{A} \models \varphi$ или $\mathcal{A} \models \neg\varphi$ 
+
+\begin{remark}
+$\mathcal{A} \cancel{\models} \varphi$ и оценка $\nu$, за която $\mathcal{A} \models \neg\varphi$, тогава за всяка оценка $\omega$ е в сила $\mathcal{A} \models_\omega \neg\varphi, \mathcal{A} \models \neg\varphi$.
+\end{remark}
+
+\begin{remark}
+Винаги е вярно едно от двете $\mathcal{A} \models_\nu \varphi$ или $\mathcal{A} \models_\nu \neg\varphi$, но \underline{$\mathcal{A} \models \varphi$ или $\mathcal{A} \models \neg\varphi$} \underline{е вярно само ако формулата $\varphi$ е затворена}.
+\end{remark}
+\end{prop}
+
+\subsection*{Семантика на език от първи ред}
+
+\begin{prop}
+$\ $
+
+\begin{itemize}
+\item $\mathcal{A} \models_\nu p(\tau_1, \tau_2, \ldots, \tau_n) \leftrightharpoons <\tau_1, \tau_2, \ldots, \tau_n> \in p^\mathcal{A}$;
+\item $\mathcal{A} \models_\nu (\tau_1 \doteq \tau_2) \leftrightharpoons \tau_1^\mathcal{A}[\nu] = \tau_2^\mathcal{A}[\nu]$;
+\item $\mathcal{A} \models_\nu \neg\varphi \leftrightharpoons \mathcal{A} \cancel{\models} \varphi$;
+\item $\mathcal{A} \models_\nu (\varphi \& \psi) \leftrightharpoons \mathcal{A} \models \varphi$ и $\mathcal{A} \models \psi$;
+\item $\mathcal{A} \models_\nu (\varphi \lor \psi) \leftrightharpoons \mathcal{A} \models \varphi$ или $ \mathcal{A} \models \psi$;
+\item $\mathcal{A} \models_\nu (\varphi \Rightarrow \psi) \leftrightharpoons$ ако $\mathcal{A} \models \varphi$, то $ \mathcal{A} \models \psi$;
+\item $\mathcal{A} \models_\nu (\varphi \Leftrightarrow \psi) \leftrightharpoons \mathcal{A} \models \varphi$ тогава и само тогава, когато $ \mathcal{A} \models \psi$;
+\item $\mathcal{A} \models_\nu \forall x\varphi \leftrightharpoons$ за всяко $a \in A, \mathcal{A} \models_{\nu^x_a} \varphi$;
+\item $\mathcal{A} \models_\nu \exists x\varphi \leftrightharpoons$ съществува $a \in A, \mathcal{A} \models_{\nu^x_a} \varphi$;
+\end{itemize}
+\end{prop}
+
+\begin{prop}
+$\ $
+\begin{itemize}
+\item $\varnothing$ е определимо във всяка структура при всеки език: $\varphi[x], \varphi \& \neg\varphi$ определя $\varnothing$; 
+\item $A$ е определимо във всяка структура при всеки език: $\varphi[x], \varphi \lor \neg\varphi$ определя $A$;
+\item $A^2$ е определимо във всяка структура при всеки език: $\varphi[x], \varphi[x, y], \varphi \lor \neg\varphi$ определя $A^2$;
+\item ако $B$ е определимо и $B \subseteq A^n$, то $A^n \setminus B$ е също определимо. 
+
+$<a_1, a_2, \ldots, a_n> \in B \longleftrightarrow A \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$
+
+$A \cancel{\models}\ \varphi[\![a_1, a_2, \ldots, a_n]\!]\longleftrightarrow <a_1, a_2, \ldots, a_n> \cancel{\in} B \longleftrightarrow <a_1, a_2, \ldots, a_n> \cancel{\in} A^n \setminus B$
+\item ако $B_1, B_2 \subseteq A^n$ са определими, то $B_1 \cup B_2, B1 \cap B2, B1 \setminus B_2, B_1 \Delta B_2$ също са определими.
+
+Щом $B_1$ е определимо, т.е. $\exists \varphi[x_1, x_2, \ldots x_n]$, която определя $B_1$ и щом $B_2$ е определимо, т.е. $\exists \psi[x_1, x_2, \ldots x_n]$, която определя $B_2$.
+
+Тогава $(\varphi\lor\psi)[x_1, x_2, \ldots x_n]$ определя $B_1 \cup B_2$, $(\varphi\&\psi)[x_1, x_2, \ldots x_n]$ определя $B_1 \cap B_2$, $(\varphi\&\neg\psi)[x_1, x_2, \ldots x_n]$ определя $B_1 \setminus B_2$, $[(\varphi\&\neg\psi)\lor(\neg\varphi\&\psi)][x_1, x_2, \ldots x_n]$ определя $B_1 \Delta B_2$.
+
+Ако $\{x_1, x_2, \ldots, x_n\} \cap \{y_1, y_2, \ldots, y_n\} = \varnothing$ и $\psi'[y_1, y_2, \ldots, y_n]$ определя $B_2$, то $\varphi\lor\psi'$ определя $(B_1 \times A^n) \cup (B_2 \times A^n)$.
+
+\end{itemize}
+\end{prop}
+
+\subsection*{Хомоморфизми и изоморфизми.}
+
+\begin{prop}[Изоморфизъм] 
+$\ $
+\begin{itemize}
+\item $\mathcal{A} \cong \mathcal{B} \longrightarrow \mathcal{B} \cong \mathcal{A}$, ако $h$ е изоморфизъм на $\mathcal{A}$ върху $\mathcal{B}$, то $h^{-1}$ е изоморфизъм на $\mathcal{B}$ върху $\mathcal{A}$
+\item $\mathcal{A} \cong \mathcal{B}$ и $\mathcal{B} \cong \mathcal{C} \longrightarrow \mathcal{A} \cong \mathcal{C}$, нека $h_1, h_2$ са изоморфизми съответно на $\mathcal{A}$ върху $\mathcal{B}$ и на $\mathcal{B}$ върху $\mathcal{C}$. Тогава $h(a) = h_1 \circ h_2 = h_2(h_1(a))$ е изоморфизъм на $\mathcal{A}$ върху $\mathcal{C}$.
+\item $\mathcal{A} \cong \mathcal{A}, I\!d_\mathcal{A}$ е изоморфизъм на $\mathcal{A}$ върху $\mathcal{A}$
+\end{itemize}
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+\begin{itemize}
+\item Нека $h: A \longrightarrow B$ е биекция. Тогава $h^{-1}: B \longrightarrow A$ също е биекция.
+Значи:
+\begin{itemize}
+\item $b_1 = h(a_1), a_i \in A$;
+\item $f^\mathcal{B}(b_1, b_2, \ldots, b_n) = f^\mathcal{B}(h(a_1), h(a_2), \ldots, h(a_n)) = h(f^\mathcal{A}(a_1, a_2, \ldots, a_n)) = \\ =  h(f^\mathcal{A}(h^{-1}(b_1), h^{-1}(b_2), \ldots, h^{-1}(b_n)))$
+\end{itemize}
+Следователно $h^{-1}(f^\mathcal{B}(b_1, b_2, \ldots, b_n)) = h^{-1}(h(f^\mathcal{A}(h^{-1}(b_1), h^{-1}(b_2), \ldots, h^{-1}(b_n)))) = \\ = f^\mathcal{A}(h^{-1}(b_1), h^{-1}(b_2), \ldots, h^{-1}(b_n))$
+
+Ще покажем, че е вярно $(b_1, b_2, \ldots, b_n) \in p^\mathcal{B} \longleftrightarrow (h^{-1}(b_1), h^{-1}(b_2), \ldots, h^{-1}(b_n)) \in p^\mathcal{A}$.
+
+Тъй като $h$ е биекция, то $b_1 = h(a_1), b_2 = h(a_2), \ldots, b_n = h(a_n)$ за произволни $a_1, a_2, \ldots, a_n \in A$. Тогава $(b_1, b_2, \ldots, b_n) \in p^\mathcal{B} \longleftrightarrow (h(a_1), h(a_2), \ldots, h(a_n)) \in p^\mathcal{B} \overset{\text{хом.}}{\longleftrightarrow} (a_1, a_2, \ldots, a_n) \in p^\mathcal{A} \\ \longleftrightarrow (h^{-1}(b_1), h^{-1}(b_2), \ldots, h^{-1}(b_n)) \in p^\mathcal{A}$.
+\end{itemize}
+\end{proof}
+\fi
+
+\end{prop}
+
+\begin{prop}[Автоморфизъм] 
+Ако $\mathcal{A} = \mathcal{B}$ и $h$ е изоморфизъм на $\mathcal{A}$ върху $\mathcal{B}$, то $h$ се нарича автоморфизъм в $\mathcal{A}$.
+\begin{itemize}
+\item $I\!d_\mathcal{A}$ е автоморфизъм;
+\item $h$ е автоморфизъм, то $h^{-1}$ е автоморфизъм;
+\item $h_1$ и $h_2$ са автоморфизми в $\mathcal{A}$, то $h_2\circ h_1$ е автоморфизъм в $\mathcal{A}$.
+\end{itemize}
+\end{prop}
+
+\subsection*{Логически еквивалентни формули}
+
+\begin{prop}
+Верни са всички еквивалентности за съждителни формули.
+\begin{itemize}
+\item $\exists x\varphi \mymod \neg\forall x\neg\varphi$
+\item $\forall x\varphi \mymod \neg\exists x\neg\varphi$
+\item $\neg\exists x\varphi \mymod \forall x\neg\varphi$
+\item $\neg\forall x\varphi \mymod \exists x\neg\varphi$
+\item $\forall(\varphi\&\psi) \mymod \forall x\varphi \& \forall x\psi$
+\item $\exists x(\varphi \lor \psi) \mymod (\exists x\varphi \lor \exists x\psi)$
+\item $\forall(\varphi \lor \psi) \cancel{\mymod} (\forall\varphi \lor \forall\psi)$
+\item $\exists(\varphi \& \psi) \cancel{\mymod} (\exists\varphi \& \exists\psi)$
+\item Нека $x \cancel{\in} Var^{free}[\varphi]$. Тогава $\forall x(\varphi \lor \psi) \mymod \forall x \varphi \lor \psi$, $\exists x(\varphi \& \psi) \mymod \exists x\varphi\&\psi, (\mathcal{A} \models_\nu \exists x\psi \longleftrightarrow \mathcal{A} \models_\nu \psi)$;
+\item Нека $x \cancel{\in} Var^{free}[\varphi]$. Тогава $\varphi \mymod \forall x\varphi, \varphi \mymod \exists x\varphi$ и $\|\varphi\|^\mathcal{A}[\nu] = \|\varphi\|^\mathcal{A}[\nu^x_a]$ за $\nu, a \in A$.
+\end{itemize}
+
+\end{prop}
+
+\subsection*{Преименуване на свързани променливи}
+
+\begin{prop}
+Ако $Qy\varphi[\sfrac{x}{y}]$ е вариант на $Qx\varphi$, то $Qx\varphi$ е вариант на $Qy\varphi[\sfrac{x}{y}]$.
+\end{prop}
+
+
+\subsection*{Логическо следване}
+
+\begin{prop}
+$\ $
+
+\begin{itemize}
+\item Ако $\varphi \in \Gamma$, то $\Gamma \models \varphi$;
+\item Ако $\Gamma \subseteq \Delta$ и $\Gamma \models \varphi$, то $\Delta \models \varphi$;
+\item $\Gamma \cup \{\varphi\} \models \psi \longleftrightarrow \Gamma \models \varphi \Rightarrow \psi$;
+\item $\varphi_1, \varphi_2, \ldots, \varphi_n \models \psi \longleftrightarrow (\varphi_1\&\varphi_2\&\ldots\&\varphi_n) \Rightarrow \psi$.
+\end{itemize}
+\end{prop}
+
+\subsection*{Затворени универсални формули}
+
+\begin{prop}
+$\ $
+
+\begin{itemize}
+\item Нека $\mathcal{A}$ е структура, в която е вярна затворената универсална формула $\varphi$. Тогава в $\mathcal{A}$ е верен всеки затворен частен случай на $\varphi$.
+\item Ако $\Gamma$ е множество от затворени универсални формули, то $CSI(\Gamma) \leftrightharpoons \underset{\varphi \in \Gamma}{\bigcup} CSI(\varphi)$
+\item $\mathcal{A} \models \Gamma \longrightarrow \mathcal{A} \models CSI(\Gamma)$.
+\end{itemize}
+\end{prop}
+
+
+\subsection*{Съждителна резолюция}
+\subsubsection*{Правило на съждителната резолюция}
+
+\begin{prop}
+$\ $
+\begin{itemize}
+\item Ако $\mathbb{D}_1, \mathbb{D}_2, \ldots, \mathbb{D}_n$ е резолютивен извод от $S$ и $k \leq n$, то $\mathbb{D}_1, \mathbb{D}_2, \ldots, \mathbb{D}_k$ също е резолютивен извод;
+\item Ако $\alpha$ и $\beta$ са резолютивни изводи от $S$, то $\alpha, \beta$ също е резолютивен извод от $S$;
+\item Ако $S$ е разпознаваемо (рекурсивно) множество и $\mathbb{D}_1, \mathbb{D}_2, \ldots, \mathbb{D}_k$ е крайна редица от дизюнкти, то можем алгоритмично да разпознаем дали $\mathbb{D}_1, \mathbb{D}_2, \ldots, \mathbb{D}_k$ е рекурсивен извод от $S$;
+\item Нека $I$ е булева интерпретация, $S$ е множество от дизюнкти и $\mathbb{D}_1, \mathbb{D}_2, \ldots, \mathbb{D}_k$ е резолютивен извод от $S$. Ако $I \models S$, то за всяко $k \leq n, I \models \mathbb{D}_k$.
+\end{itemize}
+\end{prop}
+
+
+\subsection*{Трансверзали за фамилии от множества}
+
+\begin{prop}
+$A$ има трансверзала $\longleftrightarrow$ за всяко множество $x \in A, x \neq \varnothing$.
+\end{prop}
+
+
+\subsection*{Хорнови дизюнкти}
+
+\begin{prop}
+$\ $
+\begin{itemize}
+\item Ако $\mathbb{D}_1$ и $\mathbb{D}_2$ са хорнови дизюнкти и $!\mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2)$, то $\mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2)$ е също хорнов дизюнкт;
+\item Нека $S$ е множество от хорнови дизюнкти и $\blacksquare \cancel{\in} S$. Ако $S$ е неизпълнимо, то $S$ съдържа поне един факт и поне една цел;
+\item Ако $S$ е хорнова програма, то $S$ има модел.
+\end{itemize}
+
+\end{prop}
+
+\begin{prop}[Формално равенство]
+$\ $
+\begin{itemize}
+\item $\forall x Eq(x,x)$;
+\item $\forall x\forall y (Eq(x, y) \Leftrightarrow Eq(y, x))$;
+\item $\forall x\forall y\forall z((Eq(x, y) \& Eq(y,z)) \Rightarrow Eq(x, z)$;
+\item $\forall x_1\ldots\forall x_n\forall x_1'\ldots\forall x_n' (Eq(x_1, x_1')\&\ldots\& Eq(x_n, x_n')) \Rightarrow (f(x_1, \ldots, x_n) \doteq f(x_1', \ldots, x_n'))$
+\item $\forall x_1\ldots\forall x_n\forall x_1'\ldots\forall x_n' (Eq(x_1, x_1')\&\ldots\& Eq(x_n, x_n')) \Rightarrow (p(x_1, \ldots, x_n) \Leftrightarrow p(x_1', \ldots, x_n'))$
+\end{itemize}
+
+\end{prop}
+
+\newpage
+\fi
+
+\ifcase\Claims\or
+
+\section*{Твърдения}
+
+\subsection*{Семантика на съждителните формули}
+
+\begin{claim} \label{tv-1}
+Всяка съждителна интерпретация $I_0$ може по единствен начин да се разшири до изображение $I$ от съвкупността на всички съждителни формули в $\{T, F\}$.
+
+Има единствено изображение $I : \{\varphi \mid \varphi$ \textit{е съждителна формула} $\} \rightarrow \{T, F\}$ 
+\begin{itemize}
+\item за всяка съждителна променлива $P, I(P) = I_0(P)$;
+\item за всяка съждителна формула $\varphi, I(\neg\varphi) = H_{\neg}(I(\varphi))$;
+\item за всеки две съждителни формули $\varphi$ и $\psi, I((\varphi \sigma \psi)) = H_{\sigma}(I(\varphi), I(\psi)), \sigma \in \{ \&, \lor, \Rightarrow, \Leftrightarrow \}$.
+\end{itemize}
+
+Следва от \textbf{еднозначния синтактичен анализ} на съждителните функции.
+
+
+\ifcase\Proofs\or
+\begin{proof}
+Приложение на еднозначния синтактичен анализ -- индукция относно построението на съждителните формули.
+
+Ако $I$ и $I'$ удовлетворяват написаните условия, то те съвпадат. Непосредствено от индуктивния принцип и еднозначния синтактичен анализ.
+
+\end{proof}
+\fi
+\end{claim}
+
+\begin{claim}
+Ако $\Gamma_1 \subseteq \Gamma_2$ и $\Gamma_2$ е изпълнимо, то $\Gamma_1$ също е изпълнимо.
+
+
+\ifcase\Proofs\or
+\begin{proof}
+Наистина, ако $I$ е булев модел за $\Gamma_2$, то за всяка формула $\varphi \in \Gamma_2, I \models \varphi$. В частност, за всяко $\varphi \in \Gamma_1, I \models \varphi$. Значи ако $I \models \Gamma_2$, то $I \models \Gamma_1$. Следователно $\Gamma_1$ е изпълнимо.
+\end{proof}
+\fi
+
+\end{claim}
+
+\begin{claim}
+Ако $\Gamma_1 \subseteq \Gamma_2$ и $\Gamma_1$ е неизпълнимо, то $\Gamma_2$ също е неизпълнимо.
+\end{claim}
+
+\begin{claim}
+$\varphi$ е съждителна тавтология, т.е. всяка булева интерпретация е модел за $\varphi$, тогава и само тогава, когато $\neg\varphi$ е противоречие.
+
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+\begin{itemize}
+\item[$\Rightarrow)$](Достатъчност) Нека $\varphi$ е съждителна тавтология. 
+
+Нека $I_0$ е произволна булева интерпретация. Тогава $I_0 \models \varphi$, т.е. $I(\varphi) = T$. Следователно $I(\neg\varphi) = H_\neg(I(\varphi)) = H_\neg(T) = F$, т.е. $I_0 \cancel{\models} \neg\varphi$.
+\item[$\Leftarrow)$](Необходимост) Нека $\neg\varphi$ е противоречие.
+
+Нека $I_0$ е произволна булева интерпретация. Тъй като $\neg\varphi$ е произволна, $I(\neg\varphi) = F$. $F = I(\neg\varphi) = H_\neg(I(\varphi))$. Следователно $I(\varphi) = T$. $I_0$ е произволна, следователно $\varphi$ е тавтология.
+\end{itemize}
+\end{proof}
+\fi
+\end{claim}
+
+\begin{claim}
+Нека $\varphi$ е съждителна формула. Нека $I_0$ и $J_0$ са булеви интерпретации. 
+
+Ако за всяка съждителна променлива $P$, участваща лингвистично във $\varphi$, т.е. $P \in Var(\varphi)$, $I_0(P) = J_0(P)$, то $I(\varphi) = J(\varphi)$.
+
+\ifcase\Proofs\or
+\begin{proof}
+Доказателство с индукция по построението на $\varphi$:
+\begin{itemize}
+\item Нека $\varphi$ е съждителна променлива, $P$.
+
+Тогава $Var(\varphi) = \{P\}$. Нека $I_0$ и $J_0$ са булеви интерпретации, удовлетворяващи условието за всяка променлива от $Var(\varphi)$, $I_0$ и $J_0$ съвпадат.
+
+Тогава $I(\varphi) = I(P) = I_0(P) = J_0(P) = J(P) = J(\varphi)$.
+
+\item Нека $\varphi = \neg\psi$, като за $\psi$ твърдението е вярно. 
+
+Значи всеки път, когато $I_0$ и $J_0$ са булеви интерпретации, такива че за всяка съждителна променлива $P \in Var(\varphi)$, $I_0(P) = J_0(P)$, то $I(\psi) = J(\psi)$.
+
+Нека $I_0$ и $J_0$ са булеви интерпретации и за всяко $P \in Var(\psi)$ имаме $I_0(P) = J_0(P)$. $Var(\varphi) = Var(\neg\psi) = Var(\psi)$. Следователно, за всяка $P \in Var(\varphi), I_0(P) = J_0(P)$. От индукционното предположение следва $I(\psi) = J(\psi)$.
+
+Следователно $H_\neg(I(\psi)) = H_\neg(J(\psi))$, т.е. $I(\neg\varphi) = J(\neg\varphi)$.
+
+\item Нека $\varphi = (\varphi_1 \sigma \varphi_2), \sigma \in \{\&, \lor, \Rightarrow, \Leftrightarrow\}$.
+
+Нека $I_0$ и $J_0$ са булеви интерпретации, такива че $I_0(P) = J_0(P)$ всеки път, когато $P \in Var(\varphi), Var(\varphi) = Var(\varphi_1) \cup Var(\varphi_2)$.
+
+За всяко $P \in Var(\varphi_1)$ имаме $I_0(P) = J_0(P)$. Прилагаме индукционното предположение за $\varphi_1, I_0, J_0$ и получаваме $I(\varphi_1) = J(\varphi_1)$.
+
+За всяко $P \in Var(\varphi_2)$ имаме $I_0(P) = J_0(P)$. Прилагаме индукционното предположение за $\varphi_2, I_0, J_0$ и получаваме $I(\varphi_2) = J(\varphi_2)$.
+
+Тогава $I(\varphi) = I(\varphi_1 \sigma \varphi_2) = H_\sigma(I(\varphi_1), I(\varphi_2)) = H_\sigma(J(\varphi_1), J(\varphi_2)) = J(\varphi_1 \sigma \varphi_2) = J(\varphi)$.
+\end{itemize}
+\end{proof}
+\fi
+
+\iffalse
+\begin{proof}
+Свойството $A$ за $\varphi$: булевите интерпретации $I$ и $J$ са такива, че за всяка променлива $P$ участваща във $\varphi$, ако $I[P] = J[P]$, то $I[\varphi] = J[\varphi]$.
+
+\begin{itemize}
+\item Нека $\varphi$ е съждителна променлива, т.е. $\varphi = P_0$.
+
+Нека $I$ и $J$ са булеви интерпретации. Нека $P$ е съждителна променлива участваща във $\varphi$, тогава $P = P_0$, $I[P] = J[P]$, $I[\varphi] = I[P_0] = J[P_0] = J[\varphi]$.
+\item Нека $\varphi$ е съждителна формула, която има свойството $A$, т.е. ако $I$ и $J$ са булеви интерпретации, които имат една и съща стойност за променливите участващи във $\varphi$, то $I[\varphi] = J[\varphi]$.
+
+Доказваме, че $\neg\varphi$ също има свойството $A$.
+
+Нека $I'$ и $J'$ са булеви интерпретации и за всяка съждителна променлива $P$ участваща в $\neg\varphi$, $I'[P] = J'[P]$. Нека $P$ е съждителна променлива участваща във $\varphi$. Тогава $P$ участва и в $\neg\varphi$. Така за всяка променлива $P$ участваща във $\varphi$, $I'[P] = J'[P]$. Следователно $I'[\varphi] = J'[\varphi]$. Тогава $I'[\neg\varphi] = H_{\neg}[I'[\varphi]] = H_{\neg}[J'[\varphi]] = J'[\neg\varphi]$. Значи $I'[\neg\varphi] = J'[\neg\varphi]$, т.е. $\neg\varphi$ има свойството $A$.
+\item Нека $\varphi$ и $\psi$ имат свойството $A$. За булевите интерпретации $I$ и $J$, 
+\begin{itemize}
+\item ако $I[P] = J[P]$ за всяко $P$ участващо във $\varphi$, то $I[\varphi] = J[\varphi]$;
+\item ако $I[P] = J[P]$ за всяко $P$ участващо в $\psi$, то $I[\psi] = J[\psi]$.
+\end{itemize}
+Нека $I'$ и $J'$ са булеви интерпретации и $I'[P] = J'[P]$ за всяка съждителна променлива $P$ участваща във $(\varphi \sigma \psi), \sigma \in \{\&, \lor, \Rightarrow, \Leftrightarrow\}$. Тогава $P$ участва във $(\varphi \sigma \psi)$. Значи $I'[P] = J'[P]$.
+
+Нека $P$ е съждителна променлива, $P$ има участие във $\varphi$, $\varphi$ има свойството $A$. Следователно $I'[\varphi] = J'[\varphi]$.
+
+Нека $P$ е съждителна променлива, $P$ има участие във $\psi$ и във $\varphi	\sigma \psi$, $I'[P] = J'[P]$ и от факта, че $\psi$ има свойството $A$, $I'[\psi] = J'[\psi]$. 
+
+Значи $I'[(\varphi \sigma \psi)] = H_{\sigma}[I'[\varphi], I'[\psi]] = H_{\sigma}[J'[\varphi], J'[\psi]] = J'[(\varphi \sigma \psi)]$.
+
+\end{itemize}
+\end{proof}
+\fi
+
+\begin{conseq}
+Проблемите за изпълнимост и тавтологичност на съждителни формули са разрешими, т.е. има алгоритъм, който по дадена произволна формула $\varphi$ разпознават дали $\varphi$ е изпълнима и съответно дали е тавтология.
+
+
+\ifcase\Proofs\or
+\begin{proof}
+$Var(\varphi)$ е крайно множество, $Var(\varphi) = \{P_1, P_2, \ldots, P_n\}$.
+
+Последователно подреждаме редица с дължина $n$ от $\{T, F\}$. За всяка такава редица $a_1, a_2, \ldots, a_n$ смятаме стойността на $\varphi$ при $I(P_i) = a_i, 1 \leq i \leq n$. Спираме тогава, когато получим $Т$.
+
+Така имаме алгоритъм за разпознаване на изпълнимост.
+\end{proof}
+\fi
+\end{conseq}
+
+\begin{remark}
+Пробелмът за изпълнимост на съждителна формула е NP-пълен.
+\end{remark}
+\end{claim}
+
+
+\begin{claim}
+Дизюнкция на две формули, които са конюнкции на елементарни дизюнкции е еквивалентна с конюнкция на елементарни дизюнкции.
+\end{claim}
+
+\begin{claim}
+Конюнкция на две формули, които са конюнкции на елементарни дизюнкции е еквивалентна с конюнкция на елементарни дизюнкции.
+\end{claim}
+
+\subsection*{Булева еквивалентност на съждителни формули}
+
+
+\subsection*{Заместване на съждителни променливи със съждителни формули}
+
+\begin{claim}
+Ако $\varphi[P_1, P_2, \ldots, P_n], P_1, P_2, \ldots, P_n$ -- различни съждителни променливи и $\varphi_1, \varphi_2, \ldots, \varphi_n$ са произволни съждителни формули, то $\varphi[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}]$ е също съждителна формула.
+\end{claim}
+
+\begin{claim}
+Нека $\varphi_1, \varphi_2, \ldots, \varphi_n$ и $\psi_1, \psi_2, \ldots, \psi_n$ са съждителни формули и $\alpha_0\varphi_1\alpha_1\varphi_2\ldots\alpha_{n-1}\varphi_n\alpha_n$ е съждителна формула, то $\alpha_0\psi_1\alpha_1\psi_2\ldots\alpha_{n-1}\psi_n\alpha_n$ също е съждителна формула.
+
+
+\ifcase\Proofs\or
+\begin{proof}
+Избираме променливи $Q_1, Q_2, \ldots, Q_n$ -- различни и не се срещат във $\varphi_1, \varphi_2, \ldots, \varphi_n$; $\psi_1, \psi_2, \ldots, \psi_n$; $\alpha_0, \alpha_1, \ldots, \alpha_n$.
+
+Тогава думата $\alpha_0Q_1\alpha_1Q_2\ldots\alpha_{n-1}Q_n\alpha_n =: \varphi$ е съждителна формула и $\\ \varphi[P_1, P_2, \ldots, P_k, Q_1, Q_2, \ldots, Q_n]$. От тук може да получим чрез едновременна замяна $\\ \varphi[\sfrac{P_1}{P_1}, \sfrac{P_2}{P_2}, \ldots, \sfrac{P_k}{P_k}, \sfrac{Q_1}{\varphi_1}, \sfrac{Q_2}{\varphi_2}, \ldots, \sfrac{Q_n}{\varphi_n}] = \alpha_0\varphi_1\alpha_1\varphi_2\ldots\alpha_{n-1}\varphi_n\alpha_n$ и $\\ \varphi[\sfrac{P_1}{P_1}, \sfrac{P_2}{P_2}, \ldots, \sfrac{P_k}{P_k}, \sfrac{Q_1}{\psi_1}, \sfrac{Q_2}{\psi_2}, \ldots, \sfrac{Q_n}{\psi_n}] = \alpha_0\psi_1\alpha_1\psi_2\ldots\alpha_{n-1}\psi_n\alpha_n$.
+
+Следователно, ако $\alpha_0\varphi_1\alpha_1\varphi_2\ldots\alpha_{n-1}\varphi_n\alpha_n$ е съждителна формула, то и $\alpha_0\psi_1\alpha_1\psi_2\ldots\alpha_{n-1}\psi_n\alpha_n$ също е съждителна формула.
+\end{proof}
+\fi
+\end{claim}
+
+\begin{claim} \label{algo-phi-psi}
+Има алгоритъм, който по дадена съждителна формула $\varphi$ дава винаги като резултат формула $\psi$, такава че:
+\begin{itemize}
+\item $\varphi \mymod \psi$
+\item в $\psi$ няма срещания на $\Rightarrow$ и $\Leftrightarrow$
+\end{itemize}
+
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+
+\begin{itemize}
+\item ако $\varphi$ е съждителна променлива, то $\psi = \varphi$.
+\item ако $\varphi = \neg\varphi$ и има алгоритъм за $\varphi_1$, който дава като резултат $\psi_1$, така че $\varphi_1 \mymod \psi_1$, и в $\psi_1$ няма $\Rightarrow, \Leftrightarrow$.
+
+Тогава $\varphi_1 \mymod \psi_1 \longrightarrow \neg\varphi_1 \mymod \neg\psi_1$. В $\psi_1$ няма $\Rightarrow, \Leftrightarrow$, следователно $\psi = \neg\psi_1$, също няма $\Rightarrow, \Leftrightarrow$.
+\item $\varphi = (\varphi_1 \sigma \varphi_2), \sigma \in \{\lor, \&\}$ и има алгоритъм за $\varphi_1$ и $\varphi_2$, който дава като резултат $\psi_1$ и $\psi_2$.
+
+Тогава от $\varphi_1 \mymod \psi_1$, $\varphi_2 \mymod \psi_2$ следва, че $(\varphi_1 \sigma \varphi_2) \mymod (\psi_1 \sigma \psi_2)$ и в $(\psi_1 \sigma \psi_2)$ няма $\Rightarrow, \Leftrightarrow$.
+
+\item $\varphi = (\varphi_1 \Rightarrow \varphi_2)$ и има алгоритъм за $\varphi_1$ и $\varphi_2$, който дава като резултат $\psi_1$ и $\psi_2$.
+
+Тогава $(\varphi_1 \Rightarrow \varphi_2) \mymod (\psi_1 \Rightarrow \psi_2)$ и $(\psi_1 \Rightarrow \psi_2) \mymod (\neg\psi_1 \lor \psi_2)$. 
+
+Следователно може да считаме, че $(\neg\psi_1 \lor \psi_2)$ е резултат от алгоритъма.
+
+\item $\varphi = (\varphi_1 \Leftrightarrow \varphi_2)$ и има алгоритъм за $\varphi_1$ и $\varphi_2$, който дава като резултат $\psi_1$ и $\psi_2$.
+
+Тогава $(\varphi_1 \Leftrightarrow \varphi_2) \mymod (\psi_1 \Leftrightarrow \psi_2)$ и $(\psi_1 \Leftrightarrow \psi_2) \mymod (\psi_1 \& \psi_2) \lor (\neg\psi_1 \& \neg\psi_2)$.
+
+Следователно може да считаме, че $(\psi_1 \& \psi_2) \lor (\neg\psi_1 \& \neg\psi_2)$ е резултат от алгоритъма.
+\end{itemize}
+\end{proof}
+\fi
+
+\end{claim}
+
+\begin{claim}
+Има алгоритъм, който по дадена съждителна формула $\varphi$ дава винаги като резултат формула $\psi$, такава че:
+\begin{itemize}
+\item $\varphi \mymod \psi$
+\item в $\psi$ няма срещания на $\Rightarrow$ и $\Leftrightarrow$
+\item всяко срещане на $\neg$ е от вида $\neg P, P \in PVar$.
+\end{itemize}
+
+
+\ifcase\Proofs\or
+\begin{proof}
+От твърдение \ref{algo-phi-psi} получаваме $\psi$, такова че $\varphi \mymod \psi$ и в $\psi$ няма срещане на $\Rightarrow, \Leftrightarrow$.
+
+\begin{itemize}
+\item ако $\psi \in PVar$, то твърдението е изпълнено.
+\item ако $\psi = \neg\psi'$:
+\begin{itemize}
+\item ако $\psi' = \neg\psi''$, то $\psi = \neg\neg\psi'' \mymod \psi''$
+\item ако $\psi' = (\psi_1 \& \psi_2)$, то $\neg\psi' \mymod \neg(\psi_1 \& \psi_2) \mymod (\neg\psi_1 \lor \neg\psi_2)$
+\item ако $\psi' = (\psi_1 \lor \psi_2)$, то $\neg\psi' \mymod \neg(\psi_1 \lor \psi_2) \mymod (\neg\psi_1 \& \neg\psi_2)$
+\end{itemize}
+\end{itemize}
+\end{proof}
+\fi
+\end{claim}
+
+\begin{claim}
+Има алгоритъм, който на $\varphi$ съпоставя $\psi = \psi_1\ \&\ \psi_2\ \&\ \ldots\ \&\ \psi_n$, където $\psi_1, \psi_2, \ldots\, \psi_n$ са елементарни дизюнкции.
+\end{claim}
+
+\begin{claim}
+Нека $\varphi_1, \varphi_2, \ldots, \varphi_n$ са съждителни формули. Нека $\varphi$ е съждителна формула, такава че $\varphi \mymod \alpha_0\varphi_1\alpha_1\varphi_2\ldots\varphi_n\alpha_n$. 
+
+Казваме, че сме отбелязали някои конкретни участия на $\varphi_1, \varphi_2, \ldots, \varphi_n$ във $\varphi$. Нека $\varphi_1', \varphi_2', \ldots, \varphi_n'$ са съждителни формули.
+
+Да разгледаме думата $\alpha_0\varphi_1'\alpha_1\varphi_2'\ldots\varphi_n'\alpha_n$. Тази дума е съждителна формула.
+
+\begin{proof}
+Доказателството използва \textbf{еднозначен синтактичен анализ} и индукция по построението на $\varphi$. Вземаме твърдението за истина на доверие.
+\end{proof}
+
+\end{claim}
+
+\begin{claim}
+Нека $I$ е булева интерпретация, такава че $I(\varphi_1) = I(\varphi_1'), \ldots, I(\varphi_n) = I(\varphi_n')$. Тогава $I(\alpha_0\varphi_1\alpha_1\ldots\varphi_n\alpha_n) = I(\alpha_0\varphi_1'\alpha_1\ldots\varphi_n'\alpha_n)$.
+\end{claim}
+
+\iffalse
+\begin{proof}
+Индукция относно построението на $\varphi$:
+\begin{itemize}
+\item $\varphi = P$, където $P$ е съждителна променлива.
+\begin{itemize}
+\item $\varphi = \alpha_0 = \varphi'$, т.е. $I[\varphi] = I[\varphi']$;
+\item $\varphi = \varphi_1$, $\varphi' = \varphi_1'$, т.е. $I[\varphi] = I[\varphi_1]$, по предположение имаме $I[\varphi_1] = I[\varphi_1']$, и $I[\varphi'] = I[\varphi_1'] \Rightarrow I[\varphi] = I[\varphi']$.
+\end{itemize}
+\item Нека $\varphi = \neg\psi$ и за $\psi$ твърдението е изпълнено.
+\begin{enumerate}
+\item $\alpha_0 = \neg\alpha_0' \\ \varphi' = \neg\alpha_0'\varphi_1'\ldots\varphi_n'\alpha_n \\ \varphi = \neg\alpha_0'\varphi_1\ldots\varphi_n\alpha_n \\ \psi\bm{\alpha_0'\varphi_1\alpha_1\ldots\varphi_n\alpha_n}$ и $\bm{\alpha_0'\varphi_1'\alpha_1\ldots\varphi_n'\alpha_n'}$ са съждителни формули.
+
+Ако $\alpha_0 = \varepsilon$, то $\\ \varphi = \varphi_1\alpha_1\ldots\alpha_n \\ \varphi = \neg\varphi_1'\alpha_1\ldots\alpha_n \\ \varphi = \neg\varphi_1'$.
+\item $\varphi = (\psi_1 \sigma \psi_2)$.
+\begin{remark}
+Никое собствено начало на формула не е празно.
+\end{remark}
+$\psi_1 = \beta_1\varphi_1\ldots\varphi_k\beta_{k+1} \\ \psi_2 = \gamma_1\varphi_{k+1}\ldots\varphi_n\alpha_n', \alpha_n = \alpha_n'$
+\begin{remark}
+Започвайки една подформула на $\psi_1$, тя непременно ще завърши до края на $\psi_1$; никоя подформула на $\psi_1$, не може да закачи $($, защото иначе ще бъде цялата формула.
+\end{remark}
+\end{enumerate}
+\end{itemize}
+
+\end{proof}
+\fi
+
+\begin{claim}
+Нека $\varphi$ е съждителна формула, в която не участват $\Rightarrow$ и $\Leftrightarrow$. Тогава алгоритмично можем да намерим формула $\varphi'$, такава че $\varphi \mymod \varphi'$ и $\Rightarrow, \Leftrightarrow$ не участват във $\varphi'$ и във $\varphi'$ отрицанието се среща само пред съждителни променливи.
+
+Например: $\varphi' \Rightarrow \alpha\neg\beta \rightarrow \beta = P\beta'$.
+\end{claim}
+
+\subsection*{Предикатно смятане от първи ред}
+
+\begin{claim}
+Нека $\mathcal{L}_2$ е разширение на $\mathcal{L}_1$. Тогава всеки терм от $\mathcal{L}_1$ е терм от $\mathcal{L}_2$.
+
+\begin{proof}
+С индукция по построението на термовете.
+\end{proof}
+\end{claim}
+
+\begin{claim}
+За всеки два терма $\tau$ и $\varkappa$ е в сила еквивалентността: $\tau$ е подтерм на $\varkappa \longleftrightarrow \tau \in Subt(\varkappa)$.
+\end{claim}
+
+\subsection*{Семантика на език от първи ред}
+
+\begin{claim}
+Нека $\mathcal{A}$ е крайна структура и са зададени интерпретации на нелогическите символи. Тогава има алгоритъм, който по дадена формула $\varphi$ разпознава дали формулата е вярна или не.
+
+\setcounter{conseq}{0}
+\begin{conseq}
+Има алгоритъм, който по дадена формула $\varphi$ разпознава дали в крайна структура $\mathcal{A}, \mathcal{A} \models \varphi$.
+\end{conseq}
+\end{claim}
+
+\begin{claim}
+Ако $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$ и за всяка индивидна променлива $x$, участваща във $\varphi, \nu_1(x) = \nu_2(x)$, то $\mathcal{A} \models \varphi$.
+\end{claim}
+
+\begin{claim}
+Нека $\mathcal{A}$ е структура. Тогава за всяка формула $\varphi$ е в сила следното: ако $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$ и $\nu_1 | Var^{free}(\varphi) = \nu_2 | Var^{free}(\varphi)$, то $\|\varphi\|^\mathcal{A}[\nu_1] = \|\varphi\|^\mathcal{A}[\nu_2]$.
+
+
+\ifcase\Proofs\or
+\begin{proof}
+Индукция по построението на $\varphi$:
+
+\begin{itemize}
+\item $\varphi = p(\tau_1, \tau_2, \ldots, \tau_n)$. Нека $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$ и $\nu_1 | Var^{free}(\varphi) = \nu_2 | Var^{free}(\varphi)$. Нека $1 \leq i \leq n$, $Var^{free}(\tau_i) \subseteq Var^{free}(\varphi)$. 
+
+Следователно $\nu_1 | Var(\tau_i) = \nu_2 | Var(\tau_i), \tau_i^\mathcal{A}[\nu_1] = \tau_i^\mathcal{A}[\nu_2]$.
+
+\begin{align*}
+p(\tau_1, \tau_2, \ldots, \tau_n)\|^\mathcal{A}[\nu_1] &\longleftrightarrow <\tau_1[\nu_1], \tau_2[\nu_1], \ldots, \tau_n[\nu_1]> \in p^\mathcal{A} \\ &\longleftrightarrow <\tau_1[\nu_2], \tau_2[\nu_2], \ldots, \tau_n[\nu_2]> \in p^\mathcal{A} \longleftrightarrow \|p(\tau_1, \tau_2, \ldots, \tau_n)\|^\mathcal{A}[\nu_2]
+\end{align*}
+
+\item $\varphi = \neg\varphi_1$ и за $\varphi_1$ твърдението е вярно. Нека $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$ и $\nu_1 | Var^{free}(\varphi) = \nu_2 | Var^{free}(\varphi)$. Тъй като $Var^{free}(\varphi) = Var^{free}(\varphi_1)$, имаме $\nu_1 | Var^{free}(\varphi_1) = \nu_2 | Var^{free}(\varphi_1)$.
+
+Следователно $\|\varphi_1\|^\mathcal{A}[\nu_1] = \|\varphi_1\|^\mathcal{A}[\nu_2]\ (ih)$. Тогава $H_\neg(\|\varphi_1\|^\mathcal{A}[\nu_1]) = H_\neg(\|\varphi_1\|^\mathcal{A}[\nu_2])$, т.е. $\\ \|\neg\varphi_1\|^\mathcal{A}[\nu_1] = \|\neg\varphi_1\|^\mathcal{A}[\nu_2]$.
+
+\item $\varphi = (\varphi_1 \sigma \varphi_2), \sigma \in \{\&, \lor, \Rightarrow, \Leftrightarrow\}$ и за $\varphi_1$ и $\varphi_2$ твърдението е вярно. Нека $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$ и $\nu_1 | Var^{free}(\varphi) = \nu_2 | Var^{free}(\varphi)$, $Var^{free}(\varphi) = Var^{free}(\varphi_1) \cup Var^{free}(\varphi_2)$, т.е. $Var^{free}(\varphi_1) \subseteq Var^{free}(\varphi)$ и $Var^{free}(\varphi_2) \subseteq Var^{free}(\varphi)$.
+
+Значи $\nu_1 | Var^{free}(\varphi_j) = \nu_2 | Var^{free}(\varphi_j), j = 1,2$. Ето защо можем да приложим $(ih)$ за $\varphi$ и $\nu_1, \nu_2$. Така $\|\varphi_j\|^\mathcal{A}[\nu_1] = \|\varphi_j\|^\mathcal{A}[\nu_2]$.
+
+$\|\varphi\|^\mathcal{A}[\nu_1] = H_\sigma(\|\varphi_1\|^\mathcal{A}[\nu_1], \|\varphi_2\|^\mathcal{A}[\nu_1]) = H_\sigma(\|\varphi_1\|^\mathcal{A}[\nu_2], \|\varphi_2\|^\mathcal{A}[\nu_2]) = \|\varphi\|^\mathcal{A}[\nu_2]$.
+
+\item $\varphi = Qx\psi, Q \in \{\forall, \exists\}$ и за $\psi$ твърдението е вярно. Нека $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$ и $\nu_1 | Var^{free}(\varphi) = \nu_2 | Var^{free}(\varphi)$. Нека $a$ е произволен елемент на $A$. Разглеждаме оценките $\nu_{1a}^{\ x}$ и $\nu_{2a}^{\ x}$. $Var^{free}(\psi) \subseteq Var^{free}(\varphi) \cup \{x\}$. Нека $y \in Var^{free}(\psi)$. Тогава:
+
+\begin{enumerate}[label=(\alph*)]
+\item $y = x$, следователно $\nu_{1a}^{\ x}(y) = a = \nu_{2a}^{\ x}(y)$;
+\item $y \neq x$, следователно $y \in Var^{free}(\varphi), \nu_1(y) = \nu_2(y)$, следователно $\nu_{1a}^{\ x}(y) = \nu_{2a}^{\ x}(y)$.
+\end{enumerate}
+
+Тогава за всяко $y \in Var^{free}(\psi), \nu_{1a}^{\ x}(y) = \nu_{2a}^{\ x}(y)$. Прилагаме $(ih)$ към $\psi$ за $\nu_{1a}^{\ x}$ и $\nu_{2a}^{\ x}$. $\|\psi\|^\mathcal{A}[\nu_{1a}^{\ x}] = \|\psi\|^\mathcal{A}[\nu_{2a}^{\ x}]$.
+
+\begin{enumerate}[label=(\alph*)]
+\item ако $Q = \forall$. Нека $\|\psi\|^\mathcal{A}[\nu_1] = T$. Тогава за всяко $a \in A, \|\psi\|^\mathcal{A}[\nu_{1a}^{\ x}] = T$. Следователно за всяко $a \in A, \|\psi\|^\mathcal{A}[\nu_{2a}^{\ x}] = T$. Значи $\|\psi\|^\mathcal{A}[\nu_1] = T$. Аналогично от $\|\varphi\|^\mathcal{A}[\nu_1] = T$ следва $\|\varphi\|^\mathcal{A}[\nu_2] = T$, т.е. $\|\varphi\|^\mathcal{A}[\nu_1] = \|\varphi\|^\mathcal{A}[\nu_2]$.
+\item ако $Q = \exists$. Нека $\|\varphi\|^\mathcal{A}[\nu_1] = T$. Тогава има $a \in A, \|\psi\|^\mathcal{A}[\nu_{1a}^{\ x}] = T$. Така има $a \in A, \|\psi\|^\mathcal{A}[\nu_{2a}^{\ x}] = T$. Аналогично $\|\varphi\|^\mathcal{A}[\nu_2] = T$ влече $\|\varphi\|^\mathcal{A}[\nu_1] = T$. Следователно $\|\varphi\|^\mathcal{A}[\nu_1] = \|\varphi\|^\mathcal{A}[\nu_2]$.
+\end{enumerate}
+
+\end{itemize}
+\end{proof}
+\fi
+\end{claim}
+
+\begin{claim}
+Нека $\varphi$ е формула, $x$ е индивидна променлива, $\mathcal{A}$ е структура за езика, в който е $\varphi$. Тогава $\mathcal{A} \models \varphi \longleftrightarrow \mathcal{A} \models \forall x \varphi$.
+
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+\begin{itemize}
+\item[$\Rightarrow)$] Нека в $\mathcal{A}$ е вярна формулата $\varphi$, т.е. $\mathcal{A} \models \varphi$, т.е. за всяка оценка $\nu$ в $\mathcal{A}, \mathcal{A} \models_\nu \varphi$.
+
+Нека $\omega$ е произволна оценка в $\mathcal{A}$. Нека $a \in A$. Да разгледаме $\omega^x_a$. Тогава $\mathcal{A} \models_{\omega^x_a} \varphi$. Следователно $\mathcal{A} \models_\omega \forall x \varphi$. Следователно $\mathcal{A} \models \forall x \varphi$.
+\item[$\Leftarrow)$] Обратно, нека $\mathcal{A} \models \forall x \varphi$, т.е. за всяка оценка $\nu$ и всяко $a \in A, \mathcal{A} \models_{\nu^x_a} \varphi$. Нека $\omega$ е произволна оценка в $\mathcal{A}, \nu \leftrightharpoons \omega^x_{\nu(x)}$. За $\mathcal{A} \models_{\omega^x_{\nu(x)}} \varphi$, т.е. $\mathcal{A} \models_\nu \varphi$. Но $\nu = \omega$, т.е. $\mathcal{A} \models_\omega \varphi$. Така имаме, че $\mathcal{A} \models \varphi$.
+\end{itemize}
+
+\end{proof} 
+\fi
+
+\begin{conseq}
+Нека $Var^{free}(\varphi) \subseteq \{x_1, x_2, \ldots, x_n\}$ и $x_1, x_2, \ldots, x_n$ са различни, т.е. $\varphi[x_1, x_2, \ldots, x_n]$. Тогава $\forall x_1\forall x_2\ldots\forall x_n\varphi$ е затворена формула. Следователно $\mathcal{A} \models \varphi \longleftrightarrow \mathcal{A} \models \forall x_1\forall x_2\ldots\forall x_n\varphi$.
+\end{conseq}
+
+\end{claim}
+
+\begin{claim}
+Нека $B \subseteq A^n$ е определимо. Нека $x_1, x_2, \ldots, x_n$ са различни индивидни променливи. Тогава има формула $\varphi[x_1, x_2, \ldots, x_n]$, която определя $B$.
+\end{claim}
+
+\subsection*{Хомоморфизми и изоморфизми.}
+
+\begin{claim}
+Нека $h$ е хомоморфизъм на $\mathcal{A}$ в $\mathcal{B}$. Нека $\tau$ е терм и $\tau[x_1, x_2, \ldots, x_n]$. 
+
+Тогава за произволни $a_1, a_2, \ldots, a_n \in A$ е изпълнено \[h(\tau^\mathcal{A}[\![a_1, a_2, \ldots, a_n ]\!]) = \tau^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]\]
+
+
+\ifcase\Proofs\or
+\begin{proof}
+Индукция по построението на $\tau$:
+\begin{itemize}
+\item $\tau = c$ 
+
+$h(\tau^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]) = h(c^\mathcal{A}) = c^\mathcal{B} = \tau^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$
+
+\item $\tau = x$
+
+$\tau[x_1, x_2, \ldots, x_n]$, следователно $x = x_i$ за някое $i, 1 \leq i \leq n$ и значи $x^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!] = a_i$. Тогава $h(x^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]) = h(a_i) = x^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$.
+
+\item $\tau = f(\tau_1, \tau_2, \ldots, \tau_n)$ и за $\tau_1, \tau_2, \ldots, \tau_n$ твърдението е вярно.
+
+$tau[x_1, x_2, \ldots, x_n]$, следователно за всяко $i, 1 \leq i \leq n, \tau_i[x_1, x_2, \ldots, x_n]$.
+
+Тогава индукционното предположение е изпълнено за $\tau_i$: 
+$h(\tau^\mathcal{A}[\![a_1, a_2, \ldots, x_n]\!]) = \\ = h(f^\mathcal{A}(\tau_1^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!], \tau_2^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!], \ldots, \tau_n^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!])) = \\ = f^\mathcal{B}(h(\tau_1^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]), h(\tau_2^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]), \ldots, h(\tau_n^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!])) = \\ = f^\mathcal{B}(\tau_1^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!], \ldots, \tau_n^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!])) = \\ = \tau^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$.
+\end{itemize}
+\end{proof}
+\fi
+\end{claim}
+
+
+\begin{claim}
+Нека $h$ е хомоморфизъм на $\mathcal{A}$ към $\mathcal{B}$. Нека $\varphi$ е без формално равенство.
+\begin{enumerate}
+\item Ако $\varphi$ е безкванторна, то $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$, за произволни $a_1, a_2, \ldots, a_n \in A$.
+\item Ако $\varphi = \exists y_1\exists y_2\ldots\exists y_n\psi$, където $\psi$ е безкванторна, то за произволни $a_1, a_2, \ldots, a_n \in A$ е изпълнено $\mathcal{A} \models \exists y_1\exists y_2\ldots\exists y_n\psi[\![a_1, a_2, \ldots, a_n]\!] \longrightarrow \mathcal{B} \models \exists y_1\exists y_2\ldots\exists y_n\psi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$.
+\item Ако $\varphi = \forall y_1\forall y_2\ldots\forall y_n\psi$, $\psi$ е безкванторна. Нека $a_1, a_2, \ldots, a_n \in A$. 
+
+Тогава $\mathcal{B} \models \forall y_1\forall y_2\ldots\forall y_n\psi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!] \longrightarrow \mathcal{A} \models \forall y_1\forall y_2\ldots\forall y_n\psi[\![a_1, a_2, \ldots, a_n]\!]$.
+
+\end{enumerate}
+\end{claim}
+
+\begin{claim}
+Нека $h$ е изоморфно влагане на $\mathcal{A}$ в $\mathcal{B}$. Нека $\varphi$ е безкванторна формула, и $\varphi[x_1, x_2, \ldots, x_n]$ $($т.е. свободните променливи на $\varphi$ са измежду $x_1, x_2, \ldots, x_n$, но $\varphi$ е безкванторна и значи, че всички променливи на $\varphi \in \{x_1, x_2, \ldots, x_n\})$.
+
+Тогава за произволни $a_1, a_2, \ldots, a_n \in A$ е изпълнено \[\mathcal{A} \models \varphi [\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \models \varphi [\![h(a_1), h(a_2), \ldots, h(a_n)]\!]\]
+
+\setcounter{conseq}{0}
+
+\begin{conseq}
+Нека $h$ е изоморфно влагане на $\mathcal{A}$ в $\mathcal{B}$. Нека $\varphi$ е формула и $\varphi[x_1, x_2, \ldots, x_n]$.
+
+Тогава за произволни $a_1, a_2, \ldots, a_n \in A$:
+\begin{enumerate}
+\item Ако $\varphi$ е екзистенциална и $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$, то $\mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$
+
+\item Ако $\varphi$ е универсална и $\mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$, то $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$.
+\end{enumerate}
+
+\end{conseq}
+
+\end{claim}
+
+\begin{claim}
+С помощта на $\varphi_1, \varphi_2, \ldots, \varphi_n$ и използвайки $\neg, \&, \lor, \Rightarrow, \Leftrightarrow$ построяваме формула $\varphi$.
+
+Нека $\varphi_1 \mymod \psi_1, \varphi_2 \mymod \psi_2, \ldots, \varphi_n \mymod \psi_n$. Тогава използвайки същата конструкция получаваме формула $\psi$.
+
+Твърдим, че $\varphi$ и $\psi$ са логически еквивалентни.
+\end{claim}
+
+\begin{claim}
+Нека $\Theta$ е съждителна формула и $\Theta[p_1, p_2, \ldots, p_n]$, където $p_1, p_2, \ldots, p_n$ -- съждителни променливи.
+
+Нека $\varphi_1, \varphi_2, \ldots, \varphi_n; \psi_1, \psi_2, \ldots, \psi_n$ са предикатни формули. Тогава, ако $\varphi_1 \mymod \psi_1, \varphi_2 \mymod \psi_2, \ldots \varphi_n \mymod \psi_n$, то $\Theta[\sfrac{p_1}{\varphi_1}, \sfrac{p_2}{\varphi_2}, \ldots, \sfrac{p_n}{\varphi_n}] \mymod \Theta[\sfrac{p_1}{\psi_1}, \sfrac{p_2}{\psi_2}, \ldots, \sfrac{p_n}{\psi_n}]$.
+\end{claim}
+
+\begin{claim}
+Нека $\mathcal{A}$ е структура, $\varphi$ и $\psi$ са предикатни формули. Нека $\varphi$ е логически еквивалентна с $\psi$ в структурата $\mathcal{A}$.
+
+Всеки път, когато  $\alpha\varphi\beta$ е предикатна формула, е в сила $\alpha\varphi\beta \mymod_\mathcal{A} \alpha\psi\beta$ (конкретно участие на $\varphi$ заместено с $\psi$).	
+\end{claim}
+
+\begin{claim}
+Нека $\mathcal{A}$ е структура, $x$ е индивидна променлива, $\tau$ е терм, $\varphi$ е предикатна формула. Нека замяната $\varphi[\sfrac{x}{\tau}]$ е допустима замяна.
+
+Всеки път, когато $\nu$ и $\omega$ са оценки в $\mathcal{A}$, удовлетворяващи условията:
+\begin{itemize}
+\item $\nu(x) = \tau^\mathcal{A}[\omega]$
+\item $\nu(y) = \omega(y), \forall y \in Var^{free}[\varphi] \setminus \{x\}$
+\end{itemize}
+е в сила $\|\varphi\|^\mathcal{A}[\nu] = \|\varphi[\sfrac{x}{\tau}]\|^\mathcal{A}[\omega]$.
+\end{claim}
+
+\subsection*{Хомоморфизми и изоморфизми.}
+
+\begin{claim}
+Нека $x_1, x_2, \ldots, x_n$ са различни индивидни променливи, $\varkappa_1, \varkappa_2, \ldots, \varkappa_n$ -- термове. Нека $\mathcal{A}$ е структура. Нека $\tau$ е терм от езика $\mathcal{L}$ и оценките $\nu_1$ и $\nu_2$ в $\mathcal{A}$ удовлетворяват следните условия:
+\begin{itemize}
+\item за всяка индивидна променлива $y, y \in Var(\tau) \setminus \{x_1, x_2, \ldots, x_n\}, \nu_1(y) = \nu_2(y)$;
+\item за всяко $i, 1 \leq i \leq n, \nu_1(x_i) = \varkappa^\mathcal{A}[\nu_2]$.
+\end{itemize}
+
+Тогава $\tau^\mathcal{A}[\nu_1] = \tau[\sfrac{x_1}{\varkappa_1}, \sfrac{x_2}{\varkappa_2}, \ldots, \sfrac{x_n}{\varkappa_n}]^\mathcal{A}[\nu_2]$.
+
+\setcounter{conseq}{0}
+\begin{conseq}
+Нека $\mathcal{A}$ е структура, $\tau$ е терм. Нека $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$, такива че $\nu_1(x) = \nu_2(x)$ за всяка индивидна променлива $x, x \in Var[\tau]$. Тогава $\tau^\mathcal{A}[\nu_1] = \tau^\mathcal{A}[\nu_2]$.
+
+\begin{conseq}
+Нека $\tau$ е затворен терм $(Var[\tau] = \varnothing)$. Нека $\mathcal{A}$ е структура. Тогава за всеки две оценки $\nu_1$ и $\nu_2$ в $\mathcal{A}$, $\tau^\mathcal{A}[\nu_1] = \tau^\mathcal{A}[\nu_2]$, т.е. затворените термове в структура не зависят от нищо и имат една и съща стойност за коя да е оценка в структурата.
+\par Нека $x_1, x_2, \ldots, x_n$ са различни променливи, $Var[\tau] \subseteq \{ x_1, x_2, \ldots, x_n \}$. Такъв терм означаваме с $\tau[x_1,x_2, \ldots, x_n]$ (променливите на $\tau$ са измежду $x_1, x_2, \ldots, x_n$).
+\par Нека $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$. Тогава $\tau^\mathcal{A}$ зависи само от $\nu_1(x_1), \nu_1(x_2), \ldots, \nu_1(x_n)$ и $\nu_2(x_1), \nu_2(x_2), \ldots, \nu_2(x_n)$, $\nu_1[x_i] = \nu_2[x_i], 1 \leq i \leq n$. $\tau^\mathcal{A}[v_1] = \tau^\mathcal{A}[v_2] \longleftrightarrow \tau[\nu_1(x_1), \nu_1(x_2), \ldots, \nu_1(x_n)] = \tau[\nu_2(x_1), \nu_2(x_2), \ldots, \nu_2(x_n)]$. Такъв терм означаваме с $\tau[\![a_1, a_2, \ldots, a_n]\!]$, където $a_i = \nu_j(x_i), j = 1,2, 1 \leq i \leq n$. Всеки терм $\tau$ с фиксирана наредба от променливи $\tau[x_1, x_2, \ldots, x_n], \tau : A^n \longrightarrow A, \tau[\![a_1, a_2, \ldots, a_n]\!]$. Всеки полином поражда функция.
+\end{conseq}
+
+\end{conseq}
+
+\end{claim}
+
+\begin{claim}
+Нека $\mathcal{A}$ е структура за $\mathcal{L}$. Нека $\varphi$ е предикатна формула. Нека $\nu_1$ и $\nu_2$ са оценки в $\mathcal{A}$, такива че за всяка свободна променлива $y \in Var^{free}[\varphi], \nu_1(y) = \nu_2(y)$. Тогава $\|\varphi\|^\mathcal{A}[\nu_1] = \|\varphi\|^\mathcal{A}[\nu_2]$.
+
+\begin{remark}
+Формулите без свободна променлива говорят за света като цяло.
+\end{remark}
+
+\end{claim}
+
+\subsection*{Заместване на подформули с формули}
+
+\begin{claim}
+Нека $\varphi$ е съждителна формула и $\varphi[P_1, P_2, \ldots, P_n]$. Нека $\varphi_1, \varphi_2, \ldots, \varphi_n$ са предикатни формули.
+
+С $\varphi[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}]$ означаваме резултата от едновременната замяна на $P_1$ с $\varphi_1$, $P_2$ с $\varphi_2$, \ldots, $P_n$ с $\varphi_n$. Думата $\varphi[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}]$ е предикатна формула.
+\end{claim}
+
+\begin{claim}
+Нека $\varphi[P_1, P_2, \ldots, P_n]$ е съждителна формула и нека $\varphi_1, \varphi_2, \ldots, \varphi_n$ са предикатни формули.
+
+Нека $I_0$ е булева интерпретация, а $\mathcal{A}$ е структура над $\mathcal{L}$ и $\nu$ е оценка. Ако $I_0(P_1) = \|\varphi_1\|^\mathcal{A}[\nu], I_0(P_2) = \|\varphi_2\|^\mathcal{A}[\nu], \ldots, I_0(P_n) = \|\varphi_n\|^\mathcal{A}[\nu]$, то $I(\varphi) = \|\varphi[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}]\|^\mathcal{A}[\nu]$
+
+\setcounter{conseq}{0}
+\begin{conseq}
+Ако $\varphi$ е тавтология, то $\models \varphi[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}]$. Казваме, че $\varphi$ е тавтология по съждителни причини.
+\end{conseq}
+
+\begin{conseq}
+Нека $\varphi'$ и $\varphi''$ са съждителни формули и $\varphi' \mymod \varphi''$.
+
+Нека $\varphi'[P_1, P_2, \ldots, P_n], \varphi''[P_1, P_2, \ldots, P_n]$. Нека $\varphi_1, \varphi_2, \ldots, \varphi_n$ са произволни предикатни формули от $\mathcal{L}$. 
+Тогава $\varphi'[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}] \mymod \varphi''[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}]$
+\end{conseq}
+
+\end{claim}
+
+\begin{claim}
+Нека $\varphi[P_1, P_2, \ldots, P_n]$. Нека $\varphi_1, \varphi_2, \ldots, \varphi_n$ и $\psi_1, \psi_2, \ldots, \psi_n$ са произволни съждителни формули и $I_0$ е булева интерпретация, такава че $I(\varphi_1) = I(\psi_i), i = 1,\ldots, n$. Тогава $I(\varphi[\sfrac{P_1}{\varphi_1}, \sfrac{P_2}{\varphi_2}, \ldots, \sfrac{P_n}{\varphi_n}]) = I(\varphi[\sfrac{P_1}{\psi_1}, \sfrac{P_2}{\psi_2}, \ldots, \sfrac{P_n}{\psi_n}])$.
+\end{claim}
+
+
+\begin{claim}
+Нека $\varphi$ е предикатна формула от вида $\varphi = \alpha\varphi'\beta$, където $\varphi'$ е предикатна формула от същия език. Нека $\mathcal{A}$ е структура. Нека $\varphi''$ е предикатна формула, такава че $\varphi' \overset{\mathcal{A}}{\mymod} \varphi''$. Тогава $\alpha\varphi'\beta \overset{\mathcal{A}}{\mymod} \alpha\varphi''\beta$.
+\end{claim}
+
+\begin{claim}
+Нека $\varphi = \alpha_0\varphi_1\alpha_1\varphi_2\ldots\alpha_{n-1}\varphi_n\alpha_n$ и $\psi_1, \psi_2, \ldots, \psi_n$ са предикатни формули. Нека $\mathcal{A}$ е структура и $\varphi_1 \overset{\mathcal{A}}{\mymod} \psi_1, \varphi_2 \overset{\mathcal{A}}{\mymod} \psi_2, \ldots, \varphi_n \overset{\mathcal{A}}{\mymod} \psi_n$.
+
+Тогава $\alpha_0\varphi_1\alpha_1\varphi_2\ldots\alpha_{n-1}\varphi_n\alpha_n \overset{\mathcal{A}}{\mymod} \alpha_0\psi_1\alpha_1\psi_2\ldots\alpha_{n-1}\psi_n\alpha_n$.
+\end{claim}
+
+
+\subsection*{Заместване на индивидни променливи с термове}
+
+\begin{claim}
+Нека $\nu, \omega$ са оценки в $\mathcal{A}$ и е изпълнено $\nu(x_1) = \tau^\mathcal{A}_i[\omega], 1 \leq i \leq n$. Тогава $\tau^\mathcal{A}[\nu] = \tau[\sfrac{x_1}{\tau_1}, \sfrac{x_2}{\tau_2}, \ldots, \sfrac{x_n}{\tau_n}]^\mathcal{A}[\nu]$
+\end{claim}
+
+\begin{claim}
+Нека $\mathcal{A}$ е структура, $\varphi$ е формула, $x$ е индивидна променлива, $\tau$ е терм и $\varphi[\sfrac{x}{\tau}]$ е допустима замяна.
+
+Нека $\nu$ и $\omega$ са оценки в $\mathcal{A}$. Ако
+\begin{align*}
+  \nu(x) &= \tau^\mathcal{A}[\omega]\\ 
+  \nu(y) &= \omega(y), \forall y \in Var^{free}[\varphi]\setminus\{x\}\\ 
+\end{align*}
+Тогава $\|\varphi\|^\mathcal{A}[\nu] = \|\varphi[\sfrac{x}{\tau}]\|^\mathcal{A}[\omega]$, т.е. $\mathcal{A} \models_\nu \varphi \longleftrightarrow \mathcal{A} \models_\omega \varphi[\sfrac{x}{\tau}]$.
+\end{claim}
+
+\begin{claim}
+Нека $\varphi$ е предикатна формула и замяната $\varphi[\sfrac{x}{\tau}]$ е допустима. Тогава
+\begin{align*}
+  \models \forall x\varphi \Rightarrow \varphi[\sfrac{x}{\tau}]\\ 
+  \models \varphi[\sfrac{x}{\tau}] \Rightarrow \exists x \varphi\\ 
+\end{align*}
+\end{claim}
+
+
+\subsection*{Преименуване на свързани променливи}
+
+\subsection*{Логическо следване}
+
+\begin{claim}
+Нека $\Gamma \models \psi$. За всяко $\varphi \in \Gamma, x \cancel{\in} Var^{free}[\varphi]$. Тогава $\Gamma \models \forall x \psi$.
+\end{claim}
+
+\begin{claim}
+Ако $\Gamma \models \psi$, то $\Gamma \models^g \psi$.
+\end{claim}
+
+\begin{claim}
+Нека $\Gamma$ е множество от затворени формули. Ако $\Gamma \models^g \psi$, то $\Gamma \models \psi$. Значи, ако $\Gamma$ е множество от затворени формули, то $\Gamma \models \psi \longleftrightarrow \Gamma \models^g \psi$.
+\end{claim}
+
+\subsection*{Скулемизация}
+
+\begin{claim}
+Нека $\varphi$ е затворена формула в пренексна нормална форма. 
+
+Тогава $\models \varphi_S \Rightarrow \varphi$. Следователно $\models \varphi^S \Rightarrow \varphi$.
+\end{claim}
+
+\begin{claim}
+Нека $\varphi$ е затворена формула в пренексна нормална форма, $\mathcal{A}$ е структура за езика $\mathcal{L}$ и в $\mathcal{A}$ е вярна $\varphi$. Тогава има обогатяване $\mathcal{A}_S$ на $\mathcal{A}$ до структура в разширения език, такова че $\mathcal{A}_S \models \varphi_S$.
+
+Следователно $\mathcal{A} \models \varphi$ влече, че има обогатяване $\mathcal{A}_S$ на $\mathcal{A}, \mathcal{A}^S \models \varphi^S$.
+\end{claim}
+
+\subsection*{Затворени универсални формули}
+
+\begin{claim}
+Нека $\Gamma$ е множество от затворени универсални формули. Нека $\mathcal{A}$ е структура, такава че за всяко $a \in A$ съществува затворен терм $\tau_a$, за който $\tau^\mathcal{A}_a = a$.
+
+Тогава $\mathcal{A} \models \Gamma \longleftrightarrow CSI(\Gamma)$.
+\end{claim}
+
+\begin{claim}
+Нека $\mathcal{A}$ е структура. За всяко $a \in \mathcal{A}$ има затворен терм $\tau_a$, такъв че $\tau^\mathcal{A}_a = a$. Тогава $\mathcal{A} \models CSI(\Gamma) \longrightarrow \mathcal{A} \models \Gamma$.
+
+Така, ако $\mathcal{A}$ има горното свойство, то $\mathcal{A} \models \Gamma \longleftrightarrow \mathcal{A} \models CSI(\Gamma)$.
+\end{claim}
+
+\subsection*{Ербранови структури}
+
+\begin{claim}
+За всеки затворен терм $\tau$ и за всяка ербранова структура $\mathcal{H}$, $\tau^\mathcal{H} = \tau$.
+\end{claim}
+
+\begin{claim}
+Един език $\mathcal{L}$ има ербранова структура $\longleftrightarrow \Tau^{cl}_\mathcal{L} \neq \varnothing \longleftrightarrow \mathbb{C}onst_\mathcal{L} \neq \varnothing$.
+\end{claim}
+
+\begin{claim}
+За  всеки затворен терм $\tau$ е изпълнено, че $\tau^\mathcal{H} = \tau$.
+\end{claim}
+
+\begin{claim}
+Нека $\Gamma$ е множество от затворени формули в език с $\mathbb{C}onst_\mathcal{L} \neq \varnothing$. Тогава за всяка ербранова структура $\mathcal{H}$ на $\mathcal{L}, \mathcal{H} \models \Gamma \longleftrightarrow \mathcal{H} \models CSI(\Gamma)$.
+\end{claim}
+
+
+\subsubsection*{Безкванторни формули}
+
+\begin{claim}
+Нека $\mathcal{A}$ е структура и $\nu$ е оценка в $\mathcal{A}$. Тогава дефинираме булева интерпретация $I_{\mathcal{A},\nu}: I_{\mathcal{A},\nu}(\Theta) \leftrightharpoons \|\Theta\|^\mathcal{A}[\nu]$ за всяка атомарна формула $\Theta$. 
+
+За всяка безкванторна $\varphi: \|\varphi\|^\mathcal{A}[\nu] = I_{\mathcal{A},\nu}(\varphi)$, т.е. $ \mathcal{A} \models_\nu \varphi \longleftrightarrow I_{\mathcal{A}, \nu} \models \varphi$. Така, ако $\Delta$ е множество от безкванторни формули, $\mathcal{A} \models_\nu \Delta \longleftrightarrow I_{\mathcal{A}, \nu} \models \Delta$. Ако $\Delta$ е изпълнимо, то $\Delta$ е булево изпълнимо.
+\end{claim}
+
+\begin{claim}
+Нека $\Gamma$ е множество от безкванторни формули от езика $\mathcal{L}$. Нека $\mathcal{A}$ е структура, $\nu$ е оценка и всички формули от $\Gamma$ са верни в $\mathcal{A}$ при $\nu$, т.е. $\mathcal{A} \models_\nu \Gamma$.
+
+Да разгледаме булевите интерпретации $I_{\mathcal{A},\nu}$ на атомарните формули, дефинирани така за $\varphi$ -- атомарна, $I_{\mathcal{A}, \nu}[\varphi] = \|\varphi\|^\mathcal{A}[\nu]$.
+
+Тогава $I_{\mathcal{A}, \nu} \models \Gamma$ (булев модел за $\Gamma$).
+
+\setcounter{conseq}{0}
+\begin{conseq}
+Нека $\Gamma$ е множество от безкванторни формули. Ако $\Gamma$ е изпълнимо, то $\Gamma$ има булев модел, т.е. е булево изпълнимо.
+\end{conseq}
+
+\end{claim}
+
+\begin{claim}
+Нека $\Delta$ е множество от безкванторни формули в език без формално равенство. Тогава $\Delta$ е изпълнимо $\longleftrightarrow \Delta$  е булево изпълнимо.
+
+\begin{remark}
+Интерпретацията на формалното равенство в ербранова структура е ``графичното'' равенство на термове.
+
+Така, ако $\Delta$ е множество от затворени формули без формално равенство. $\Delta$ е булево изпълнимо $\longleftrightarrow \Delta$ има ербранов модел.
+\end{remark}
+\end{claim}
+
+\begin{claim}
+$\Gamma$ има модел $\longleftrightarrow CSI(\Gamma)$ е булево изпълнимо, следователно $\Gamma$ е неизпълнимо $\longleftrightarrow CSI(\Gamma)$ е булево неизпълнимо.
+
+\setcounter{conseq}{0}
+\begin{conseq}
+$\ $
+
+\begin{enumerate}
+\item Нека $\Gamma$ е множество от затворени универсални формули в език с поне една индивидна константа и без формално равенство. Тогава има алгоритъм, който спира работа точно тогава, когато $\Gamma$ е неизпълнимо и работи до безкрай, когато $\Gamma$ е изпълнимо.
+\item Ако допълнително в езика няма функционални символи, то има алгоритъм, който винаги завършва работа за краен брой стъпки и разпознава дали $\Gamma$ е изпълнимо.
+\end{enumerate}
+
+\begin{remark}
+Тъй като в езика няма функционални символи, затворените термове са само индивидните константи. Но $\Gamma$ е крайно множество, следователно индивидните константи, които имат значение, са краен брой. Следователно $CSI(\Gamma)$ е крайно.
+\end{remark}
+
+\end{conseq}
+\end{claim}
+
+\subsubsection*{Свободни ербранови структури}
+
+\begin{claim}
+Нека $\mathcal{H}$ е свободна ербранова структура за езика $\mathcal{L}$ и $\nu$ е оценка в $\mathcal{H}$. Тогава за всеки терм $\tau$, $\tau^\mathcal{H}[\nu] = \tau[\sfrac{x_1}{\nu(x_1)}, \sfrac{x_2}{\nu(x_2)}, \ldots, \sfrac{x_n}{\nu(x_n)}]$, където $Var[\tau] \subseteq \{x_1, x_2, \ldots, x_n\}$.
+
+\setcounter{conseq}{0}
+\begin{conseq}
+Нека $\mathcal{H}$ е свободна ербранова структура и разгледаме оценките $I\!d_{V\!ar}$.
+
+За всеки терм $\tau, \tau^\mathcal{H}[I\!d_{V\!ar}] = \tau$.
+\end{conseq}
+
+\begin{conseq}
+Нека $\mathcal{H}$ е свободна ербранова структура и $\nu$ e оценка в $\mathcal{H}$.
+
+За всеки затворен терм $\tau$ (терм, в който няма променливи), $\tau^\mathcal{H} = \tau$.
+
+$(\tau_1 \doteq \tau_2)^\mathcal{H}[I\!d_{V\!ar}] = T \longleftrightarrow \tau_1^\mathcal{H}[I\!d_{V\!ar}] = \tau_2^\mathcal{H}[I\!d_{V\!ar}] \longleftrightarrow \tau_1 = \tau_2$ (ще разглеждаме езици без формално равенство).
+\end{conseq}
+
+\end{claim}
+
+\begin{claim}
+Нека $\mathcal{L}$ е предикатен език без формално равенство. Нека $\Gamma$ е множество от безкванторни формули от $\mathcal{L}$.
+
+Ако $\Gamma$ е булево изпълнимо, то $\Gamma$ е изпълнимо.
+\end{claim}
+
+\begin{claim}
+Нека $\mathcal{L}$ е предикатен език без формално равенство. Нека $\Gamma$ е множество от безкванторни формули от $\mathcal{L}$.
+
+Тогава $\Gamma$ е булево изпълнимо $\longleftrightarrow \Gamma$ е изпълнимо $\longleftrightarrow \Gamma$ е изпълнимо в свободна ербранова структура.
+\end{claim}
+
+\subsection*{Съждителна резолюция}
+\begin{claim}
+Нека $\mathbb{D}$ е дизюнкт. $\mathbb{D}$ е тавтология, ако има два дуални литерали $L, L^\partial \in \mathbb{D}$.
+\end{claim}
+
+\begin{claim}
+Нека $\mathbb{D}$ е дизюнкт. $\mathbb{D}$ е изпълним $\longleftrightarrow \mathbb{D} \neq \blacksquare$.
+\end{claim}
+
+\subsection*{Правило на съждителната резолюция}
+
+\begin{claim}
+Нека $I$ е булева интерпретация, $\mathbb{D}_1$ и $\mathbb{D}_2$ са дизюнкти, а $L$ е литерал и $!\mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2)$.
+
+Ако $I \models \{\mathbb{D}_1, \mathbb{D}_2\}$, то $I \models \{\mathbb{D}_1, \mathbb{D}_2, \mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2)\}$.
+\end{claim}
+
+\begin{claim}
+Ако дизюнктът $\mathbb{D} =  \mathcal{R}_L(\mathbb{D}_1, \mathbb{D}_2)\}, I \models \mathbb{D}_1$ и $I \models \mathbb{D}_2$, то $I \models \mathbb{D}$.
+\end{claim}
+
+
+\subsection*{Трансверзали за фамилии от множества}
+
+\begin{claim}
+Нека $A$ е фамилия от множества и $Y$ е трансверзала за $A$. Тогава следните са еквивалентни:
+\begin{enumerate}
+\item $Y$ е минимална трансверзала;
+\item Всеки път, когато $Y_0 \subset Y$, то е в сила, че $Y_0$ не е трансверзала;
+\item За всяко $a \in Y, Y \setminus \{a\}$ не е трансверзала за $A$;
+\item За всеки елемент $a \in Y$ съществува $x \in A$, такова че $Y \cap x = \{a\}$.
+\end{enumerate}
+\end{claim}
+
+\begin{claim}
+Ако $A$ е фамилия от непразни множества, то не винаги $A$ има минимална трансверзала.
+\end{claim}
+
+\begin{claim}
+Нека $S$ е множество от дизюнкти, което е затворено относно правилото за резолюцията, т.е. $\mathbb{D}_1, \mathbb{D}_2 \in S$ и $\mathbb{D}$ е резолвента на $\mathbb{D}_1$ и $\mathbb{D}_2 \longrightarrow \mathbb{D} \in S$.
+
+Ако $\blacksquare \cancel{\in} S$, то $S$ е изпълнимо.
+\end{claim}
+
+\begin{claim}
+$\Gamma$ е изпълнимо $\longleftrightarrow CSI(\Gamma)$ е булево изпълнимо.
+\end{claim}
+
+\subsection*{Хорнови дизюнкти}
+
+\begin{claim}
+Нека $S$ е множество от хорнови дизюнкти. Нека $M$ е непразно множество от модели на $S$.
+
+Тогава има модел $I_M \models S$, такъв че за всяка $I \in M, I_M \preccurlyeq I$.
+
+\setcounter{conseq}{0}
+\begin{conseq}
+Нека $S$ е множество от правила и факти. Тогава $S$ има най-малък модел $I_m$, т.е. $I_m \models S$ и за всеки модел $I$ на $S, I_m \preccurlyeq I$.
+\end{conseq}
+
+\end{claim}
+
+\begin{claim}
+Нека $S$ е множество от правила и факти и $C$ -- множество от цели, $S$ и $C$ са непразни, $S \cup C$ е неизпълнимо.
+
+Тогава съществува крайно $S_0 \subseteq S$ и цел $G \in C$, такива че $S_0 \cup \{G\}$ е неизпълнимо.
+\end{claim}
+
+\begin{claim}
+Ако $\mathcal{L}$ е език без формално равенство, $\Gamma$ е множество от затворени формули. $\Gamma$ е неизпълнимо $\longleftrightarrow$ съществува крайно $\Gamma_0 \subseteq \Gamma$ -- неизпълнимо.
+\end{claim}
+
+\begin{claim}
+$\Gamma$ е изпълнимо $\longleftrightarrow$ всяко крайно $\Gamma_0 \subseteq \Gamma$ е изпълнимо.
+\end{claim}
+
+\newpage
+\fi
+
+\ifcase\Lemmas\or
+\section*{Леми}
+
+\begin{lem}
+Дизюнкция на две формули, които са конюнкции на елементарни дизюнкции е еквивалентна с конюнкция на елементарни дизюнкции.
+\end{lem}
+
+\begin{lem}
+Конюнкция на две формули, които са конюнкции на елементарни дизюнкции е еквивалентна с конюнкция на елементарни дизюнкции.
+\end{lem}
+
+\newpage
+\fi
+
+\ifcase\Theorems\or
+\section*{Теореми}
+
+\subsection*{Заместване на съждителни променливи със съждителни формули}
+
+\begin{thm}[Еквивалентна замяна]
+Нека $\varphi_1, \varphi_2, \ldots, \varphi_n; \psi_1, \psi_2, \ldots, \psi_n$ са съждителни формули. Нека $\alpha_0\varphi_1\alpha_1\ldots\varphi_n\alpha_n$ също е съждителна формула. Нека $I_0$ е булева интерпретация.
+
+Тогава, ако \[I(\varphi_1) = I(\psi_1), I(\varphi_2) = I(\psi_2), \ldots, I(\varphi_n) = I(\psi_n),\] то \[I(\alpha_0\varphi_1\alpha_1\ldots\varphi_n\alpha_n) = I(\alpha_0\psi_1\alpha_1\ldots\psi_n\alpha_n)\]
+
+
+\ifcase\Proofs\or
+\begin{proof}
+С индукция относно построението на $\alpha_0\varphi_1\alpha_1\ldots\varphi_n\alpha_n$.
+\end{proof}
+\fi
+
+\setcounter{conseq}{0}
+\begin{conseq}
+Нека $\varphi_1 \mymod \psi_1, \varphi_2 \mymod \psi_2, \ldots, \varphi_n \mymod \psi_n$. Нека $\alpha_0\varphi_1\alpha_1\ldots\alpha_{n-1}\varphi_n\alpha_n$ е съждителна формула. 
+
+Тогава 
+\[
+\alpha_0\varphi_1\alpha_1\ldots\varphi_n\alpha_n \mymod \alpha_0\psi_1\alpha_1\ldots\psi_n\alpha_n
+\]
+
+\iffalse
+\begin{proof}
+$\\ \alpha_0\varphi_1\alpha_1\varphi_2\alpha_2\ldots\varphi_n\alpha_n$
+$\\ \alpha_0\varphi_1'\alpha_1\varphi_2\alpha_2\ldots\varphi_n\alpha_n$ -- интерпретация на $\varphi_1$ с $I$;
+$\\ \alpha_0\varphi_1'\alpha_1\varphi_2'\alpha_2\ldots\varphi_n\alpha_n$ -- интерпретация на $\varphi_2$ с $I$;
+$\\ \ldots $
+$\\ \alpha_0\varphi_1'\alpha_1\varphi_2'\alpha_2\ldots\varphi_n'\alpha_n$ -- интерпретация на $\varphi_n$ с $I$.
+
+\begin{remark}
+Белязаното участие на формула е или цялото дърво, или някакво поддърво на цялата формула.
+\end{remark}
+
+\begin{itemize}
+\item $\neg\varphi$:
+\begin{itemize}
+\item $\varphi_1$;
+\item $\neg\alpha_0'\varphi_1\alpha_1$.
+\end{itemize}
+\item $(\varphi_1 \sigma \psi_2)$:
+\begin{itemize}
+\item $\varphi_1$;
+\item $(\alpha_0'\varphi_1\alpha_1'\sigma\psi_2), \alpha_1 = \alpha_1'\sigma\psi_2$;
+\item $(\psi_1\sigma\alpha_0'\varphi_1\alpha_1'), \alpha_0 = \psi_1\sigma\alpha_0', \alpha_1 = \alpha_1'$.
+\end{itemize}
+\end{itemize}
+\end{proof}
+\fi
+
+\end{conseq}
+\end{thm}
+
+
+\begin{thm}[Алгоритъм за конюнкция на елементарни дизюнкции]
+Има алгоритъм, който по дадена съждителна формула $\varphi$ дава като резултат конюнкция на елементарни дизюнкции $\psi$, така че $\varphi \mymod \psi$. Процедура:
+\begin{enumerate}
+\item Елиминираме $\Leftrightarrow$, т.е. ако имаме формулата $\varphi$ с индукция относно броя на $\Leftrightarrow$ във $\varphi$, доказваме че има формула $\varphi'$, $\varphi \mymod \varphi'$ и във $\varphi'$ няма $\Leftrightarrow$.
+
+Например: $\varphi = \alpha(\varphi_1' \Leftrightarrow \varphi_2)\beta, (\varphi_1 \Leftrightarrow \varphi_2) \mymod (\varphi_1\ \&\ \varphi_2) \lor (\neg\varphi_1\ \&\ \neg\varphi_2)$. 
+
+Тогава $\varphi \mymod \alpha((\varphi_1\ \&\ \varphi_2) \lor (\neg\varphi_1\ \&\ \neg\varphi_2))\beta$ е формула с $n - 1$ срещания на знака $\Leftrightarrow$.
+
+\item Елиминираме $\Rightarrow$ с индукция относно броя на буквите $\Rightarrow$ във $\varphi$.
+
+Например: $(\varphi_1 \Rightarrow \varphi_2) \mymod (\neg\varphi_1 \lor \varphi_2)$.
+
+\item Вкарваме $\neg$ навътре, докато не останат $\neg$ само пред съждителни променливи.
+\end{enumerate}
+
+\end{thm}
+
+
+\subsection*{Предикатно смятане от първи ред}
+
+\begin{thm}[Леополд Льовенхайм, Скулем, Белан]
+Нека $\mathcal{L}$ е език на предикатното смятане, в който има само предикатни символи и те са унарни(едноместни). Тогава има алгоритъм, който разпознава изпълнимите формули от езика $\mathcal{L}$.
+\end{thm}
+
+\begin{thm}
+Нека $\mathcal{A}$ е структура, $\varphi$ е предикатна формула, $x$ -- индивидна променлива. Тогава $\mathcal{A} \models \varphi \longleftrightarrow \mathcal{A} \models \forall x\varphi$.
+
+\begin{conseq}
+Нека $Var^{free}[\varphi] \subseteq \{x_1, x_2, \ldots, x_n\}$. Тогава $\mathcal{A} \models \varphi \longleftrightarrow \mathcal{A} \models \underbrace{\forall x_1\forall x_2\ldots\forall x_n\varphi}_{\text{затворена формула}}$
+\end{conseq}
+
+\setcounter{conseq}{0}
+
+\begin{remark}
+Определимото множество трябва да е подмножество на съответна декартова степен на универсума.
+\end{remark}
+
+\end{thm}
+
+\subsection*{Хомоморфизми и изоморфизми.}
+
+
+\begin{thm}[Теорема за хомоморфизмите] \label{th-homo}
+Нека $h$ е хомоморфизъм на $\mathcal{A}$ в $\mathcal{B}$. Нека $\varphi$ е формула без формално равенство и $\varphi[x_1, x_2, \ldots, x_n]$ $($т.е. свободните променливи на $\varphi$ са измежду $x_1, x_2, \ldots, x_n)$.
+
+Тогава за произволни $a_1, a_2, \ldots, a_n \in A$ е изпълнено \[\mathcal{A} \models \varphi [\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \models \varphi [\![h(a_1), h(a_2), \ldots, h(a_n)]\!]\]
+
+\ifcase\Proofs\or
+\begin{proof}
+Индукция по построението на формулата $\varphi$:
+\begin{itemize}
+\item $\varphi = p(\tau_1, \tau_2, \ldots, \tau_n)$
+
+$\mathcal{A} \models p(\tau_1, \tau_2, \ldots, \tau_n)[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow (\tau_1^\mathcal{A}\![a_1, a_2, \ldots, a_n]\!], \tau_2^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!], \ldots,\\ \tau_n^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]) \in p^\mathcal{A} \longleftrightarrow (h(\tau_1^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]), h(\tau_2^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]), \ldots,\\ h(\tau_n^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!])) \in p^\mathcal{B} \longleftrightarrow (\tau_1^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n), \tau_1^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!], \\ \ldots, \tau_n^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]) \in p^\mathcal{B}$
+
+\item $\varphi = \neg\varphi_1$ и за $\varphi_1$ твърдението е вярно. $\varphi[x_1, x_2, \ldots x_n]$, следователно $\varphi_1[x_1, x_2, \ldots, x_n]$.
+
+$\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{A} \cancel{\models} \varphi_1[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \cancel{\models} \varphi_1[\![h(a_1), h(a_2), \ldots, h(a_n)]\!] \longleftrightarrow \mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$.
+
+\item $\varphi = (\varphi_1 \& \varphi_2)$ и за $\varphi_1$ и $\varphi_2$ твърдението е вярно. $\varphi[x_1, x_2, \ldots, x_n]$, следователно $\varphi_i[x_1, x_2, \ldots, x_n], i = 1,2$. Нека $a_1, a_2, \ldots, a_n \in A$.
+
+$(ih)$: $\mathcal{A} \models \varphi_i[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \models \varphi_i[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$
+
+$\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{A} \models \varphi_1[\![a_1, a_2, \ldots, a_n]\!] \& \varphi_2[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \\ \longleftrightarrow \mathcal{B} \models \varphi_1[\![h(a_1), h(a_2), \ldots, h(a_n)]\!] \& \varphi_2[\![h(a_1), h(a_2), \ldots, h(a_n)]\!] \longleftrightarrow \\ \longleftrightarrow \mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$
+
+\begin{remark}
+Аналогично за $\lor, \Rightarrow, \Leftrightarrow$.
+\end{remark}
+
+\item $\varphi = \exists x\psi$ и за $\psi$ твърдението е вярно. $\varphi[x_1, x_2, \ldots, x_n]$, следователно $\psi[x_1, x_2, \ldots, x_n]$. Нека $a_1, a_2, \ldots, a_n \in A$.
+
+$\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$. Тогава съществува $a \in A: \mathcal{A} \models \psi[\![a, a_1, a_2, \ldots, a_n]\!]$. Тогава $\mathcal{B} \models \psi[\![h(a), h(a_1), h(a_2), \ldots, h(a_n)]\!]$.
+
+Нека $\mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$. Тогава има $b \in B: \mathcal{B} \models \varphi[\![b, h(a_1), h(a_2), \ldots, h(a_n)]\!], h$ е сюрекция. Следователно има $a \in A: h(a) = b$ и значи $\mathcal{B} \models \varphi[\![h(a), h(a_1), h(a_2), \ldots, h(a_n)]\!]$.
+
+От $(ih)$ следва, че $\mathcal{A} \models \psi[\![a, a_1, a_2, \ldots, a_n]\!]$. Тогава $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$.
+
+\item $\varphi = \forall x\psi$ и за $\psi$ твърдението е вярно. $\varphi[x_1, x_2, \ldots, x_n]$, следователно $\psi[x_1, x_2, \ldots, x_n]$. Нека $a_1, a_2, \ldots, a_n \in A$.
+
+$\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$. Нека $a$ е произволен елемент на $A$. Тогава $\mathcal{A} \models \psi[\![a, a_1, a_2, \ldots, a_n]\!]$. Нека $b \in B$. Избираме $a \in A, h(a) = b$. Тогава $\mathcal{B} \models \psi[\![h(a), h(a_1), h(a_2), \ldots, h(a_n)]\!]$, значи $\mathcal{B} \models \psi[\![b, h(a_1), h(a_2), \ldots, h(a_n)]\!]$. Тогава $\mathcal{B} \models \varphi[\![h(a), h(a_1), h(a_2), \ldots, h(a_n)]\!]$.
+
+$\mathcal{B} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$. Нека $a \in A$. Тогава $h(a) \in B$. Следователно $\mathcal{B} \models \psi[\![h(a), h(a_1), h(a_2), \\ \ldots, h(a_n)]\!]$. 
+
+От $(ih)$ следва, че $\mathcal{A} \models \psi[\![a, a_1, a_2, \ldots, a_n]\!]$. Тогава $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!]$.
+
+\end{itemize}
+\end{proof}
+\fi
+\end{thm}
+
+\begin{thm}[Теорема за изоморфизмите]
+Нека $\mathcal{L}$ е предикатен език от първи ред (с или без формално равенство). Нека $\mathcal{A}$ и $\mathcal{B}$ са структури над $\mathcal{L}$ и $h$ е изоморфизъм на $\mathcal{A}$ върху $\mathcal{B}$.
+
+Тогава за всяка формула $\varphi$, $\varphi[x_1, x_2, \ldots, x_n]$ и произволни $a_1, a_2, \ldots, a_n \in A$ е в сила еквивалентността: \[\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]\]
+
+\ifcase\Proofs\or
+\begin{proof}
+От доказателството на твърдение (\ref{th-homo}) е достатъчно да проверим верността на $\mathcal{A} \models \varphi[\![a_1, a_2, \ldots, a_n]\!] \longleftrightarrow \mathcal{B} \models \varphi[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$ само за атомарните формули.
+
+Нека $\varphi[x_1, x_2, \ldots, x_n]$ е атомарна.
+\begin{itemize}
+\item $\varphi = p(\tau_1, \tau_2, \ldots, \tau_n)$ -- вече е доказано в доказателството на твърдение (\ref{th-homo});
+\item $\varphi = (\tau_1 \doteq \tau_2)$
+
+Нека $a_1, a_2, \ldots, a_n \in A$.
+\begin{itemize}
+\item Ако $\mathcal{A} \models (\tau_1 \doteq \tau_2)[\![a_1, a_2, \ldots, a_n]\!]$, то $\tau_1^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!] = \tau_2^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]$.
+
+$h(\tau_1^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]) = \tau_1^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!] = \tau_2^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!] = \\ = h(\tau_2^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!])$. 
+
+Следователно $\mathcal{B} \models (\tau_1 \doteq \tau_2)[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$
+
+\item Нека $\mathcal{A} \cancel{\models} (\tau_1 \doteq \tau_2)[\![a_1, a_2, \ldots, a_n]\!]$, тогава $\tau_1^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!] \neq \tau_2^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]$.
+
+$h$ е инективна, следователно $h(\tau_1^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!]) \neq h(\tau_2^\mathcal{A}[\![a_1, a_2, \ldots, a_n]\!])$, и значи $\tau_1^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!] \neq \tau_2^\mathcal{B}[\![h(a_1), h(a_2), \ldots, h(a_n)]\!]$
+\end{itemize}
+\end{itemize}
+\end{proof}
+\fi
+
+\setcounter{conseq}{0}
+
+\begin{conseq}
+Ако $\mathcal{A} \cong \mathcal{B}$, то за всяка \textbf{затворена} формула $\varphi$ е вярно $\mathcal{A} \models \varphi \longleftrightarrow \mathcal{B} \models \varphi$.
+\end{conseq}
+
+\begin{conseq}
+Нека $B \subseteq A^n$ е определимо в структурата $\mathcal{A}$, която е за език $\mathcal{L}$. Нека $h$ е автоморфизъм в $\mathcal{A}$. Тогава за произволни $a_1, a_2, \ldots, a_n \in A$ е изпълнено $(a_1, a_2, \ldots, a_n) \in B \longleftrightarrow (h(a_1), h(a_2), \ldots, h(a_n)) \in B$.
+\end{conseq}
+
+\begin{conseq}
+Нека $B \subseteq A^n$ и $h$ е автоморфизъм в $\mathcal{A}$, такъв че за някоя n-торка $(a_1, a_2, \ldots, a_n) \in A^n$ и $(a_1, a_2, \ldots, a_n) \in B$, но $(h(a_1), h(a_2), \ldots h(a_n)) \cancel{\in} B$. Тогава $B$ не е определимо с формула от $\mathcal{L}$ в $\mathcal{A}$.
+\end{conseq}
+
+\end{thm}
+
+
+\subsection*{Заместване на подформули с формули}
+
+\begin{thm}[Теорема за еквивалентната замяна]
+Нека $\alpha\varphi\beta$ е предикатна формула. Ако $\varphi \mymod \psi$, то $\alpha\varphi\beta \mymod \alpha\psi\beta$.
+
+Нека $\varphi = \alpha_0\varphi_1\alpha_1\varphi_2\ldots\alpha_{n-1}\varphi_n\alpha_n$ и $\psi_1, \psi_2, \ldots, \psi_n$ са предикатни формули. Нека $\varphi_1 \mymod \psi_1, \varphi_2 \mymod \psi_2, \ldots, \varphi_n \mymod \psi_n$.
+
+Тогава $\alpha_0\varphi_1\alpha_1\varphi_2\ldots\alpha_{n-1}\varphi_n\alpha_n \overset{\mathcal{A}}{\mymod} \alpha_0\psi_1\alpha_1\psi_2\ldots\alpha_{n-1}\psi_n\alpha_n$.
+\end{thm}
+
+\subsection*{Преименуване на свързани променливи}
+
+\begin{thm}[Теорема за варианта]
+Нека $x \neq y$ и нека формулата $Qy\varphi[\sfrac{x}{y}]$ е вариант на $Qx\varphi$.
+
+Тогава $Qx\varphi \mymod Qy\varphi[\sfrac{x}{y}]$.
+\end{thm}
+
+\subsection*{Пренексна нормална форма}
+
+
+\begin{thm}
+Има алгоритъм, който по произволна предикатна формула $\varphi$ от $\mathcal{L}$ дава $\psi$, такава че:
+\begin{enumerate}
+\item $\varphi \mymod \psi$
+\item $\psi$ е в пренексна нормална форма
+\item $Var^{free}[\varphi] = Var^{free}[\psi]$
+\item $\varphi$ и $\psi$ са в един и същ език
+\end{enumerate}
+\end{thm}
+
+\subsection*{Логическо следване}
+
+\begin{thm}[Теорема за дедукцията]
+$\Gamma \models \varphi \longleftrightarrow \Gamma \cup \{\neg\varphi\}$ е неизпълнимо множество.
+
+\ifcase\Proofs\or
+\begin{proof}
+$\ $
+\begin{itemize}
+\item[$\Rightarrow)$] (Достатъчност) Нека $\Gamma \models \varphi$. Да допуснем, че $\Gamma \cup \{\neg\varphi\}$ е изпълнимо. Тогава това множество има модел. Нека $I_0 \models \Gamma \cup \{\neg\varphi\}$. Следователно $I_0 \models \Gamma$ и $I_0 \models \neg\varphi$. Значи $I(\neg\varphi) = T$, но $I(\neg\varphi) = H_\neg(I(\varphi))$, следователно $I(\varphi) = F$, но от $\Gamma \models \varphi$ следва, че $I_0 \models \varphi$  и $I(\varphi) = T$. Противоречие.
+\item[$\Leftarrow)$] (Необходимост) Нека $\Gamma \cup \{\neg\varphi\}$ е неизпълнимо. Нека $I_0$ е произволен модел на $\Gamma$. Тъй като $\Gamma \cup \{\neg\varphi\}$ няма модел следва, че 	$I_0 \cancel{\models} \neg\varphi$, т.е. $I_0 \models \varphi$. $I_0$ е произволен модел на $\Gamma$, поради което $\Gamma \models \varphi$.
+\end{itemize}
+\end{proof}
+\fi
+
+\end{thm}
+
+
+
+\subsection*{Скулемизация}
+
+\begin{thm}
+$\ $
+
+\begin{enumerate}
+\item Нека $\varphi$ е затворена формула в пренексна нормална форма. Тогава $\varphi$ е изпълнима тогава и само тогава, когато $\varphi^S$ е изпълнима, т.е. $\varphi$ е неизпълнима тогава и само тогава, когато $\varphi^S$ е неизпълнима.
+
+\item Нека $\Gamma$ е множество от затворени формули в пренексна нормална форма. Да означим с $\Gamma^S = \{\varphi^S\ |\ \varphi \in \Gamma\}$. Тогава $\Gamma^S$ е множество от затворени универсални формули и $\Gamma^S$ е изпълнимо тогава и само тогава, когато $\Gamma$ е изпълнимо, т.е. $\Gamma^S$ е неизпълнимо тогава и само тогава, когато $\Gamma$ е неизпълнимо.
+
+\end{enumerate}
+
+\end{thm}
+
+
+\subsection*{Ербранови структури}
+
+\subsubsection*{Безкванторни формули. Свободни ербранови структури}
+
+\begin{thm}
+Нека $\Gamma$ е множество от затворени универсални формули в език с поне една индивидна константа и без формално равенство. Тогава следните са еквивалентни:
+\begin{enumerate}
+\item $\Gamma$ има модел;
+\item $\Gamma$ има ербранов модел;
+\item $CSI(\Gamma)$ има ербранов модел;
+\item $CSI(\Gamma)$ има модел;
+\item $CSI(\Gamma)$ е булево изпълнимо.
+\end{enumerate}
+\end{thm}
+
+
+\begin{thm}[Тюринг-Чърч, 1936]
+Нека $\mathcal{L}$ е език на предикатното смятане от първи ред с поне един двуместен предикатен символ. Тогава няма алгоритъм, който по произволно дадена затворена формула $\varphi$ от $\mathcal{L}$ да разпознава дали $\varphi$ е предикатна тавтология.
+
+Еквивалентно, няма алгоритъм, който да разпознава дали $\varphi$ е предикатна тавтология.
+
+\begin{remark}
+$\models \varphi \longleftrightarrow \neg\varphi$ е неизпълнима.
+\end{remark}
+\end{thm}
+
+\begin{thm}
+Нека $\varphi = \forall x_1\forall x_2\ldots\forall x_n\exists y_1\exists y_2\ldots\exists y_k\Theta$, $\Theta$ е безкванторна, $\varphi$ е затворена. Нека във $\varphi$ няма функционални символи (без формално равенство).
+
+Тогава има алгоритъм, който разпознава дали $\varphi$  е предикатна тавтология. Нещо повече, има алгоритъм, който в случай, че $\varphi$ не е предикатна тавтология дава крайна структура $\mathcal{A}, \mathcal{A} \cancel{\models} \varphi$.
+\end{thm}
+
+\subsection*{Съждителна резолюция}
+\subsubsection*{Правило на съждителната резолюция}
+
+\begin{thm}[Коректност на резолютивната изводимост]
+Нека $S$ е множество от дизюнкти. Ако $S \overset{r}{\vdash} \blacksquare$, то $S$ е неизпълнимо.
+
+\setcounter{conseq}{0}
+\begin{conseq}
+Ако $S \overset{r}{\vdash} \mathbb{D}$, то има крайно подмножество $S_0 \subseteq S$, такова че $S_0 \overset{r}{\vdash} \mathbb{D}$.
+\end{conseq}
+\end{thm}
+
+\subsection*{Трансверзали за фамилии от множества}
+\begin{thm}[Теорема за минималната трансверзала]
+Нека $A$ е фамилия от непразни крайни множества. Тогава $A$ има минимална трансверзала.
+\end{thm}
+
+\begin{thm}[Пълнота на резолютивната изпълнимост]
+Нека $S$ е множество от дозюнкти. Ако $S$ е неизпълнимо, то $S \overset{r}{\vdash} \blacksquare$.
+
+\setcounter{conseq}{0}
+\begin{conseq}[Теорема за компактност за множества от дизюнкти]
+Нека $S$ е множество от дизюнкти. Тогава $S$ е неизпълнимо $\longleftrightarrow$ има крайно $S_0 \subseteq S$, $S_0$ е неизпълнимо.
+\end{conseq}
+
+\end{thm}
+
+\begin{thm}[Жак Ербран]
+Нека $\Gamma$ е множество от затворени универсални формули от език с поне една индивидна константа и без формално равенство. Тогава следните са еквивалентни:
+\begin{enumerate}
+\item $\Gamma$ е неизпълнимо;
+\item Съществува крайно подмножество на $CSI(\Gamma)$ , което е булево неизпълнимо;
+\item Съществува краен брой затворени частни случаи $\Theta_1, \Theta_2, \ldots, \Theta_n$ на формули от $\Gamma$, такива че $\models \neg\Theta_1\lor \neg\Theta_2\lor\ldots\lor\neg\Theta_n$.
+\end{enumerate}
+\end{thm}
+
+\fi
+\end{document}
